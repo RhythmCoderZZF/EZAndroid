@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gray">#ff222222</color>
+    <color name="gray_background">#fff5f5f5</color>
+
+    <!--CmdUtil Float View-->
+    <color name="transparent_white">#AAffffff</color>
+    <color name="transparent_green">#AA3fc75f</color>
+    <color name="transparent_red">#FF1631</color>
+
+</resources>

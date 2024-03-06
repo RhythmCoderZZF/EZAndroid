@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Android System Study</string>
+    <string name="permission">Permission</string>
+    <string name="permission_sub_title">install-time permissions, runtime permissions, and special permissions</string>
+    <string name="permission_info">App permissions help support user privacy by protecting access to the following: \n\tRestricted data, such as system state and users\' contact information \n\tRestricted actions, such as connecting to a paired device and recording audio</string>
+    <string name="permission_by_user">Use Normal API to request permissions</string>
+    <string name="permission_by_system">Use the RequestPermission class in AndroidX to request permissions</string>
+    <string name="usb_sub_title">usb host and accessary mode</string>
+    <string name="usb_info">plugin USB Camera</string>
+    <string name="storage">Storage</string>
+    <string name="storage_info">Learn how to preserve your app and user data either as files on the device, in key-value pairs, in a database, or with other data types, and share data between other apps and devices. You can also add a backup service to let users store information in the cloud, sync it across devices, and recover it when they get a new device.</string>
+    <string name="storage_app_specific_files">App-specific files</string>
+    <string name="storage_app_specific_files_sub_title">Internal and External storage directories</string>
+    <string name="storage_app_specific_files_info">
+        <![CDATA[
+        In many cases, your app creates files that other apps don\'t need to access, or shouldn\'t access. The system provides the following locations for storing such app-specific files:
+        <br/><br/><b>Internal storage directories</b>: These directories include both a dedicated location for storing persistent files, and another location for storing cache data. The system prevents other apps from accessing these locations, and on Android 10 (API level 29) and higher, these locations are encrypted. These characteristics make these locations a good place to store sensitive data that only your app itself can access.
+        <br/><br/><b>External storage directories</b>: These directories include both a dedicated location for storing persistent files, and another location for storing cache data. Although it\'s possible for another app to access these directories if that app has the proper permissions, the files stored in these directories are meant for use only by your app. If you specifically intend to create files that other apps should be able to access, your app should store these files in the shared storage part of external storage instead.
+        <br/><br/>When the user uninstalls your app, the files saved in app-specific storage are removed.
+        ]]>
+    </string>
+    <string name="nfc_ndef" translatable="false">NDEF Tag</string>
+    <string name="nfc_tech" translatable="false">Tech Tag</string>
+</resources>

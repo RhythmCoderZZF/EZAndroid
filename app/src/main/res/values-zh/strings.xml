@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Android系统学习</string>
+    <string name="permission">权限</string>
+    <string name="permission_info">应用权限有助于保护对以下数据和操作的访问/执行权限，从而为保护用户隐私提供支持：\n\t受限数据，例如系统状态和用户的联系信息 \n\t受限操作，例如连接到已配对的设备并录制音频</string>
+    <string name="permission_sub_title">安装时权限、运行时权限和特殊权限</string>
+    <string name="permission_by_system">使用AndroidX中的RequestPermission类来请求权限</string>
+    <string name="permission_by_user">使用传统方式请求权限</string>
+    <string name="usb_info">插入USBCamera</string>
+    <string name="usb_sub_title">USB主机和配件模式</string>
+    <string name="storage">存储</string>
+    <string name="storage_info">了解如何以设备上的文件形式、键值对形式、数据库形式或者其他数据类型保留应用和用户数据，以及如何与其他应用和设备共享数据。您还可以添加备份服务，使用户能够将信息存储在云端、在设备之间同步信息，以及在使用新设备时恢复这些信息。</string>
+    <string name="storage_app_specific_files">应用专属文件</string>
+    <string name="storage_app_specific_files_sub_title">内部和外部存储</string>
+    <string name="storage_app_specific_files_info">
+        <![CDATA[
+        在很多情况下，您的应用会创建其他应用不需要访问或不应访问的文件。系统提供以下位置，用于存储此类应用专属文件：
+        <br/><br/><b>内部存储空间目录</b></big>：这些目录既包括用于存储持久性文件的专属位置，也包括用于存储缓存数据的其他位置。系统会阻止其他应用访问这些位置，并且在 Android 10（API 级别 29）及更高版本中，系统会对这些位置进行加密。这些特征使得这些位置非常适合存储只有应用本身才能访问的敏感数据。
+        <br/><br/><b>外部存储空间目录</b>：这些目录既包括用于存储持久性文件的专属位置，也包括用于存储缓存数据的其他位置。虽然其他应用可以在具有适当权限的情况下访问这些目录，但存储在这些目录中的文件仅供您的应用使用。如果您明确打算创建其他应用能够访问的文件，您的应用应改为将这些文件存储在外部存储空间的共享存储空间部分。
+        <br/><br/>如果用户卸载应用，系统会移除保存在应用专属存储空间中的文件。
+        ]]>
+    </string>
+</resources>
