@@ -13,8 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.androidstudy.R;
+import com.rhythmcoderzzf.baselib.BaseActivity;
 
 public class PermissionMainActivity extends BaseActivity implements View.OnClickListener {
 

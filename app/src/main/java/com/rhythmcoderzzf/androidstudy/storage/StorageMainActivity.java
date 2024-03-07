@@ -2,10 +2,10 @@ package com.rhythmcoderzzf.androidstudy.storage;
 
 import android.os.Bundle;
 
+import com.rhythmcoderzzf.androidstudy.R;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.baselib.ListAdapter;
 import com.rhythmcoderzzf.baselib.TitleBean;
-import com.rhythmcoderzzf.androidstudy.R;
 import com.rhythmcoderzzf.androidstudy.storage.all.StorageAppSpecificActivity;
 
 import java.util.ArrayList;

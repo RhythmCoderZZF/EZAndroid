@@ -21,4 +21,5 @@
     </string>
     <string name="nfc_ndef" translatable="false">NDEF Tag</string>
     <string name="nfc_tech" translatable="false">Tech Tag</string>
+    <string name="background">BackgroundWork</string>
 </resources>

@@ -14,6 +14,7 @@
         android:name="android.hardware.nfc"
         android:required="false" />
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -86,5 +87,8 @@
         </activity>
         <activity android:name="com.rhythmcoderzzf.androidstudy.storage.StorageMainActivity" />
         <activity android:name="com.rhythmcoderzzf.androidstudy.storage.all.StorageAppSpecificActivity" />
+        <activity android:name="com.rhythmcoderzzf.androidstudy.background.BackgroundWorkMainActivity" />
+
+        <service android:name="com.rhythmcoderzzf.androidstudy.background.AlarmManagerCaseService" />
     </application>
 </manifest>

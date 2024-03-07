@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.androidstudy.R;
+import com.rhythmcoderzzf.baselib.BaseActivity;
 
 import java.io.BufferedReader;
 import java.io.File;

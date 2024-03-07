@@ -20,4 +20,5 @@
         <br/><br/>如果用户卸载应用，系统会移除保存在应用专属存储空间中的文件。
         ]]>
     </string>
+    <string name="background">后台任务</string>
 </resources>
