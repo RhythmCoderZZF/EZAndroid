@@ -21,4 +21,6 @@
         ]]>
     </string>
     <string name="background">后台任务</string>
+    <string name="background_service">服务</string>
+    <string name="background_alarm">闹钟</string>
 </resources>
