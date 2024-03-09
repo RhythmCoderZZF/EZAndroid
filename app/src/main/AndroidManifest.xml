@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
-    <!--根据模块使用到的权限去申请-->
+    <!--根据每个模块使用到的权限去申请-->
     <!--[Permission]-->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -11,16 +10,16 @@
     <uses-feature android:name="android.hardware.usb.host" />
     <!--[NFC]-->
     <uses-permission android:name="android.permission.NFC" />
-    <!--[Background]-->
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="false" />
-    <!--[Background]-->
+    <!--[Background Work]-->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /><!--忽略电池优化-->
     <application
-        android:name="com.rhythmcoderzzf.androidstudy.App"
+        android:name="com.rhythmcoder.androidstudysystem.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -31,7 +30,7 @@
         android:theme="@style/Theme.AndroidStudy_System"
         tools:targetApi="31">
         <activity
-            android:name="com.rhythmcoderzzf.androidstudy.MainActivity"
+            android:name="com.rhythmcoder.androidstudysystem.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,11 +39,11 @@
         </activity>
 
         <!--[Permission]-->
-        <activity android:name="com.rhythmcoderzzf.androidstudy.permission.PermissionMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.permission.PermissionMainActivity" />
 
         <!--[USB]-->
         <activity
-            android:name="com.rhythmcoderzzf.androidstudy.usb.UsbMainActivity"
+            android:name="com.rhythmcoder.androidstudysystem.usb.UsbMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
@@ -56,9 +55,9 @@
         </activity>
 
         <!--[NFC]-->
-        <activity android:name="com.rhythmcoderzzf.androidstudy.nfc.NFCMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.nfc.NFCMainActivity" />
         <activity
-            android:name="com.rhythmcoderzzf.androidstudy.nfc.NFCTagActivity"
+            android:name="com.rhythmcoder.androidstudysystem.nfc.NFCTagActivity"
             android:exported="true"
             android:label="NFC"
             android:launchMode="singleTop">
@@ -91,14 +90,14 @@
         </activity>
 
         <!--[Storage]-->
-        <activity android:name="com.rhythmcoderzzf.androidstudy.storage.StorageMainActivity" />
-        <activity android:name="com.rhythmcoderzzf.androidstudy.storage.all.StorageAppSpecificActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.storage.StorageMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.storage.all.StorageAppSpecificActivity" />
 
-        <!--[Background]-->
-        <activity android:name="com.rhythmcoderzzf.androidstudy.background.BackgroundWorkMainActivity" />
-        <activity android:name="com.rhythmcoderzzf.androidstudy.background.alarm.BackgroundAlarmActivity" />
-        <activity android:name="com.rhythmcoderzzf.androidstudy.background.service.BackgroundServiceActivity" />
+        <!--[Background Work]-->
+        <activity android:name="com.rhythmcoder.androidstudysystem.background.BackgroundWorkMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.background.alarm.BackgroundAlarmActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.background.service.BackgroundServiceActivity" />
 
-        <service android:name="com.rhythmcoderzzf.androidstudy.background.alarm.AlarmManagerCaseService" />
+        <service android:name="com.rhythmcoder.androidstudysystem.background.alarm.AlarmManagerCaseService" />
     </application>
 </manifest>

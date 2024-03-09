@@ -25,7 +25,7 @@
     <!--Nfc-->
     <string name="nfc_ndef" translatable="false">NDEF Tag</string>
     <string name="nfc_tech" translatable="false">Tech Tag</string>
-    <!--BackgroundTask-->
+    <!--Background Work-->
     <string name="background">BackgroundTask</string>
     <string name="background_service">Service</string>
     <string name="background_alarm">Alarm</string>
