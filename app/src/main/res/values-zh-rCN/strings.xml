@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Android系统学习</string>
+    <string name="app_name">安卓系统学习</string>
     <string name="permission">权限</string>
     <string name="permission_info">应用权限有助于保护对以下数据和操作的访问/执行权限，从而为保护用户隐私提供支持：\n\t受限数据，例如系统状态和用户的联系信息 \n\t受限操作，例如连接到已配对的设备并录制音频</string>
     <string name="permission_sub_title">安装时权限、运行时权限和特殊权限</string>
@@ -23,4 +23,5 @@
     <string name="background">后台任务</string>
     <string name="background_service">服务</string>
     <string name="background_alarm">闹钟</string>
+    <string name="background_fg_service">前台服务</string>
 </resources>

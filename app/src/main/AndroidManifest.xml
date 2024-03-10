@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!--根据每个模块使用到的权限去申请-->
-    <!--[Permission]-->
+    <!-- 根据每个模块使用到的权限去申请 -->
+    <!-- [Permission] -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--[USB] The app needs to be installed on a device that supports usb host -->
-    <uses-feature android:name="android.hardware.usb.host" />
-    <!--[NFC]-->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- [USB] The app needs to be installed on a device that supports usb host -->
+    <uses-feature android:name="android.hardware.usb.host" /> <!-- [NFC] -->
     <uses-permission android:name="android.permission.NFC" />
+
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="false" />
-    <!--[Background Work]-->
+    <!--
+    [Background Work]
+    -->
+    <!-- background service -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /><!--忽略电池优化-->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!--foreground service-->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
     <application
-        android:name="com.rhythmcoder.androidstudysystem.App"
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -29,75 +34,83 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidStudy_System"
         tools:targetApi="31">
+
         <activity
-            android:name="com.rhythmcoder.androidstudysystem.MainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!--[Permission]-->
-        <activity android:name="com.rhythmcoder.androidstudysystem.permission.PermissionMainActivity" />
-
-        <!--[USB]-->
+        </activity> <!-- [Permission] -->
+        <activity android:name=".permission.PermissionMainActivity" /> <!-- [USB] -->
         <activity
-            android:name="com.rhythmcoder.androidstudysystem.usb.UsbMainActivity"
+            android:name=".usb.UsbMainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
-            <!--filter some interest usb devices -->
+            <!-- filter some interest usb devices -->
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/usb_device_filter" />
-        </activity>
-
-        <!--[NFC]-->
-        <activity android:name="com.rhythmcoder.androidstudysystem.nfc.NFCMainActivity" />
+        </activity> <!-- [NFC] -->
+        <activity android:name=".nfc.NFCMainActivity" />
         <activity
-            android:name="com.rhythmcoder.androidstudysystem.nfc.NFCTagActivity"
+            android:name=".nfc.NFCTagActivity"
             android:exported="true"
             android:label="NFC"
             android:launchMode="singleTop">
-            <!--优先级1识别 ACTION_NDEF_DISCOVERED-->
-            <!--TNF_WELL_KNOW RTD_TEXT-->
+
+            <!-- 优先级1识别 ACTION_NDEF_DISCOVERED -->
+            <!-- TNF_WELL_KNOW RTD_TEXT -->
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="*/*" />
             </intent-filter>
-            <!--TNF_WELL_KNOW RTD_URL-->
-            <!--<intent-filter>
+            <!-- TNF_WELL_KNOW RTD_URL -->
+            <!--
+            <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
                     android:host="baidu.com"
                     android:scheme="http" />
-            </intent-filter>-->
-            <!--优先级2识别 ACTION_TECH_DISCOVERED-->
+            </intent-filter>
+            -->
+            <!-- 优先级2识别 ACTION_TECH_DISCOVERED -->
             <intent-filter>
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
             </intent-filter>
+
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
-            <!--优先级3识别 ACTION_TAG_DISCOVERED-->
+            <!-- 优先级3识别 ACTION_TAG_DISCOVERED -->
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
-        </activity>
+        </activity> <!-- [Storage] -->
+        <activity android:name=".storage.StorageMainActivity" />
+        <activity android:name=".storage.all.StorageAppSpecificActivity" /> <!-- [Background Work] -->
+        <activity android:name=".background.BackgroundWorkMainActivity" />
+        <activity android:name=".background.alarm.BackgroundAlarmActivity" />
+        <activity android:name=".background.service.BackgroundServiceActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.background.service.fgservice.BackgroundForegroundServiceActivity" />
 
-        <!--[Storage]-->
-        <activity android:name="com.rhythmcoder.androidstudysystem.storage.StorageMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.storage.all.StorageAppSpecificActivity" />
-
-        <!--[Background Work]-->
-        <activity android:name="com.rhythmcoder.androidstudysystem.background.BackgroundWorkMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.background.alarm.BackgroundAlarmActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.background.service.BackgroundServiceActivity" />
-
-        <service android:name="com.rhythmcoder.androidstudysystem.background.alarm.AlarmManagerCaseService" />
+        <service
+            android:name=".background.service.BackgroundService"
+            android:enabled="true"
+            android:exported="true" />
+        <service android:name=".background.alarm.AlarmManagerCaseService" />
+        <service
+            android:name=".background.service.fgservice.ForegroundService"
+            android:enabled="true"
+            android:exported="true"
+            android:foregroundServiceType="specialUse" />
     </application>
 </manifest>

@@ -8,19 +8,19 @@
         style="@style/BaseTextView.Normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="启动一个后台服务" />
+        android:text="启动一个前台服务" />
 
     <Button
-        android:id="@+id/btn_start_service"
+        android:id="@+id/btn_start"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start service" />
+        android:text="start" />
 
     <Button
-        android:id="@+id/btn_stop_service"
+        android:id="@+id/btn_stop"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="stop service" />
+        android:text="stop" />
 </LinearLayout>
