@@ -8,19 +8,26 @@
         style="@style/BaseTextView.Normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="启动一个前台服务，注意通知变化" />
+        android:text="绑定一个服务，定义一些接口实现Activity - Service的通信" />
 
     <Button
-        android:id="@+id/btn_start"
+        android:id="@+id/btn_bind"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="start" />
+        android:text="bind service" />
 
     <Button
-        android:id="@+id/btn_stop"
+        android:id="@+id/btn_call"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="stop" />
+        android:text="call" />
+
+    <Button
+        android:id="@+id/btn_unbind"
+        style="@style/BaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="unbind service" />
 </LinearLayout>

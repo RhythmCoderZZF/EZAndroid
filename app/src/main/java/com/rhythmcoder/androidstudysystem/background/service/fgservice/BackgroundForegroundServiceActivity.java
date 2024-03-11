@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ServiceCompat;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
@@ -25,6 +24,7 @@ public class BackgroundForegroundServiceActivity extends BaseActivity implements
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_start) {
+            //startService(mIntent); 该方法也可以
             startForegroundService(mIntent);
         } else if (v.getId() == R.id.btn_stop) {
             stopService(mIntent);

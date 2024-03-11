@@ -29,5 +29,6 @@
     <string name="background">BackgroundTask</string>
     <string name="background_service">Service</string>
     <string name="background_alarm">Alarm</string>
-    <string name="background_fg_service">Forreground Service</string>
+    <string name="background_fg_service">Foreground Service</string>
+    <string name="background_bind_service">Bind Service</string>
 </resources>

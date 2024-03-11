@@ -18,6 +18,7 @@ public class BackgroundWorkMainActivity extends BaseActivity {
         List<TitleBean> list = new ArrayList<>();
         list.add(new TitleBean(getString(R.string.background_service), BackgroundServiceActivity.class));
         list.add(new TitleBean(getString(R.string.background_fg_service), BackgroundForegroundServiceActivity.class));
+        list.add(new TitleBean(getString(R.string.background_bind_service), BackgroundForegroundServiceActivity.class));
         list.add(new TitleBean(getString(R.string.background_alarm), BackgroundAlarmActivity.class));
         return list;
     }

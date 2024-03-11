@@ -24,4 +24,5 @@
     <string name="background_service">服务</string>
     <string name="background_alarm">闹钟</string>
     <string name="background_fg_service">前台服务</string>
+    <string name="background_bind_service">绑定服务</string>
 </resources>

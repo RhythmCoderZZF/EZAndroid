@@ -10,7 +10,7 @@ import com.rhythmcoder.baselib.cmd.CmdUtil;
 
 public class BaseService extends Service {
 
-    private static final String TAG = "Service";
+    protected static final String TAG = "Service";
 
     @Override
     public void onCreate() {

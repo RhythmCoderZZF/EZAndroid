@@ -4,22 +4,24 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 
 import com.rhythmcoder.androidstudysystem.background.service.BaseService;
+import com.rhythmcoder.baselib.cmd.CmdUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ForegroundService extends BaseService {
     private static final String CHANNEL_ID = "channel-001";
-    private Thread mBackgroundThread;
     private NotificationManager mNotificationManager;
     private Notification mNotification;
     private PendingIntent mPendingIntent;
-    private boolean mStarted = false;
     private String mNotificationContent = "";
+    private Handler mHandler = new Handler();
 
     public ForegroundService() {
     }
@@ -27,41 +29,25 @@ public class ForegroundService extends BaseService {
     @Override
     public void onCreate() {
         super.onCreate();
-        mNotificationContent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
         mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent notificationIntent = new Intent(this, BackgroundForegroundServiceActivity.class);
-        mPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
-        mNotification = new Notification.Builder(this, CHANNEL_ID).setContentTitle("这是一条前台服务通知").setContentText(mNotificationContent).setSmallIcon(com.rhythmcoder.baselib.R.drawable.baseline_info_24).setContentIntent(mPendingIntent).setTicker("ticker text").build();
         NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "前台服务测试", NotificationManager.IMPORTANCE_HIGH);
         mNotificationManager.createNotificationChannel(notificationChannel);
+        Intent notificationIntent = new Intent(this, BackgroundForegroundServiceActivity.class);
+        mPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (!mStarted) {
-            mBackgroundThread = new Thread(() -> {
-                mStarted = true;
-                while (!Thread.interrupted()) {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                    mNotificationContent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
-                    mNotification = new Notification.Builder(this, CHANNEL_ID).setContentTitle("这是一条前台服务通知").setContentText(mNotificationContent).setSmallIcon(com.rhythmcoder.baselib.R.drawable.baseline_info_24).setContentIntent(mPendingIntent).setTicker("ticker text").build();
-                    mNotificationManager.notify(1, mNotification);
-                }
-                mStarted = false;
-            });
-            mBackgroundThread.start();
-            startForeground(1, mNotification);
-        }
+        mNotificationContent = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+        mNotification = new Notification.Builder(this, CHANNEL_ID).setContentTitle("这是一条前台服务通知").setContentText(mNotificationContent).setSmallIcon(com.rhythmcoder.baselib.R.drawable.baseline_info_24).setContentIntent(mPendingIntent).setTicker("ticker text").build();
+        CmdUtil.d(TAG, "startForeground<<");
+        //核心方法：将当前服务转为前台服务，需要传入Notification对象
+        startForeground(1, mNotification);
+        mHandler.postDelayed(() -> {
+            CmdUtil.d(TAG, "stopForeground<<");
+            //移除前台服务状态
+            stopForeground(Service.STOP_FOREGROUND_REMOVE);
+        }, 5000);
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mBackgroundThread.interrupt();
     }
 }

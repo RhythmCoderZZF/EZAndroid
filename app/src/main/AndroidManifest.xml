@@ -100,7 +100,8 @@
         <activity android:name=".background.BackgroundWorkMainActivity" />
         <activity android:name=".background.alarm.BackgroundAlarmActivity" />
         <activity android:name=".background.service.BackgroundServiceActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.background.service.fgservice.BackgroundForegroundServiceActivity" />
+        <activity android:name=".background.service.fgservice.BackgroundForegroundServiceActivity" />
+        <activity android:name=".background.service.bindservice.BackgroundBindServiceActivity" />
 
         <service
             android:name=".background.service.BackgroundService"
@@ -112,5 +113,9 @@
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="specialUse" />
+        <service
+            android:name=".background.service.bindservice.BindService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 </manifest>
