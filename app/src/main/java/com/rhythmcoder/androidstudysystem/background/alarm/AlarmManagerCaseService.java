@@ -2,8 +2,12 @@ package com.rhythmcoder.androidstudysystem.background.alarm;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
@@ -22,6 +26,9 @@ import java.util.Date;
 
 public class AlarmManagerCaseService extends Service {
     private static final String TAG = "AlarmManagerCaseService";
+    private static final String CHANNEL_ID = "alarm_test";
+
+    private NotificationManager mNotificationManager;
     private File mFile;
 
     @SuppressLint("InvalidWakeLockTag")
@@ -43,17 +50,24 @@ public class AlarmManagerCaseService extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        mNotificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, "前台服务测试", NotificationManager.IMPORTANCE_HIGH);
+        mNotificationManager.createNotificationChannel(notificationChannel);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         new Thread(() -> doBackGroundWork()).start();
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 60 * 1000;
+        int anHour = 10 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AlarmManagerCaseService.class);
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
         manager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
+
+        String content = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
+        Notification notification = new Notification.Builder(this, CHANNEL_ID).setContentTitle("这是一条alarm测试通知").setContentText(content).setSmallIcon(com.rhythmcoder.baselib.R.drawable.baseline_info_24).build();
+        mNotificationManager.notify(1, notification);
         return super.onStartCommand(intent, flags, startId);
     }
 
