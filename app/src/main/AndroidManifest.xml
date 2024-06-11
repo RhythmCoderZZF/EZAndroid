@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- 根据每个模块使用到的权限去申请 -->
     <!-- [Permission] -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- [USB] The app needs to be installed on a device that supports usb host -->
@@ -22,6 +23,7 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <!--foreground service-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /><!--WIFI-->
 
     <application
         android:name=".App"
@@ -102,6 +104,8 @@
         <activity android:name=".background.service.BackgroundServiceActivity" />
         <activity android:name=".background.service.fgservice.BackgroundForegroundServiceActivity" />
         <activity android:name=".background.service.bindservice.BackgroundBindServiceActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.wifi.WifiMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.wifi.WlanScanActivity" />
 
         <service
             android:name=".background.service.BackgroundService"
