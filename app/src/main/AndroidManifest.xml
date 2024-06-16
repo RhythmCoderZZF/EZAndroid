@@ -6,24 +6,45 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- [USB] The app needs to be installed on a device that supports usb host -->
-    <uses-feature android:name="android.hardware.usb.host" /> <!-- [NFC] -->
-    <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- [USB] -->
+    <uses-feature android:name="android.hardware.usb.host" />
+
+    <!-- [NFC] -->
+    <uses-permission android:name="android.permission.NFC" />
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="false" />
-    <!--
-    [Background Work]
-    -->
-    <!-- background service -->
+
+    <!-- [Background Work] background service -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <!--foreground service-->
+
+    <!-- [Background Work] foreground service-->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /><!--WIFI-->
+
+    <!--[WIFI] p2p-->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- If your app targets Android 13 (API level 33)
+     or higher, you must declare the NEARBY_WIFI_DEVICES permission. -->
+    <!--    <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES"-->
+    <!-- If your app derives location information from
+         Wi-Fi APIs, don't include the "usesPermissionFlags"
+         attribute. -->
+    <!--    android:usesPermissionFlags="neverForLocation" />-->
+    <!--    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"-->
+    <!-- If any feature in your app relies on precise location
+         information, don't include the "maxSdkVersion"
+         attribute. -->
+    <!--    android:maxSdkVersion="32" />-->
 
     <application
         android:name=".App"
@@ -46,7 +67,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- [Permission] -->
-        <activity android:name=".permission.PermissionMainActivity" /> <!-- [USB] -->
+        <activity android:name=".permission.PermissionMainActivity" />
+        <!-- [USB] -->
         <activity
             android:name=".usb.UsbMainActivity"
             android:exported="true">
@@ -57,7 +79,8 @@
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
                 android:resource="@xml/usb_device_filter" />
-        </activity> <!-- [NFC] -->
+        </activity>
+        <!-- [NFC] -->
         <activity android:name=".nfc.NFCMainActivity" />
         <activity
             android:name=".nfc.NFCTagActivity"
@@ -96,7 +119,8 @@
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
             </intent-filter>
-        </activity> <!-- [Storage] -->
+        </activity>
+        <!-- [Storage] -->
         <activity android:name=".storage.StorageMainActivity" />
         <activity android:name=".storage.all.StorageAppSpecificActivity" /> <!-- [Background Work] -->
         <activity android:name=".background.BackgroundWorkMainActivity" />
@@ -104,8 +128,9 @@
         <activity android:name=".background.service.BackgroundServiceActivity" />
         <activity android:name=".background.service.fgservice.BackgroundForegroundServiceActivity" />
         <activity android:name=".background.service.bindservice.BackgroundBindServiceActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.wifi.WifiMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.wifi.WlanScanActivity" />
+        <activity android:name=".wifi.WifiMainActivity" />
+        <activity android:name=".wifi.WlanScanActivity" />
+        <activity android:name=".wifi.p2p.WlanP2PActivity" />
 
         <service
             android:name=".background.service.BackgroundService"
