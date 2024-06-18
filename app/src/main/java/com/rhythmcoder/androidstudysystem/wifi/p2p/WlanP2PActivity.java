@@ -10,9 +10,16 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.cmd.CmdUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 //【1初始化】1.在AndroidManifest中，请求在设备上使用 Wi-Fi 硬件的权限
@@ -23,6 +30,7 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
     private IntentFilter mIntentFilter;
 
     private WifiP2pDevice mP2pDevice;
+    private P2pDeviceAdapter mAdapter;
 
     /**
      * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
@@ -50,9 +58,9 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
                     //【2发现对等设备】3.使用 requestPeers() 请求已发现对等设备的列表
                     mP2pManager.requestPeers(mChannel, wifiP2pDeviceList -> {
                         if (wifiP2pDeviceList != null && !wifiP2pDeviceList.getDeviceList().isEmpty()) {
+                            mAdapter.setDataList((new ArrayList<>(wifiP2pDeviceList.getDeviceList())));
+                            mAdapter.notifyDataSetChanged();
                             //【3连接对等设备】
-                            mP2pDevice = (WifiP2pDevice) wifiP2pDeviceList.getDeviceList().toArray()[0];
-                            CmdUtil.i(TAG, "发现设备:" + mP2pDevice.toString());
                         } else {
                             toast("没有发现可用设备");
                         }
@@ -84,6 +92,13 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        RecyclerView recyclerView = findViewById(R.id.rv_devices);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        mAdapter = new P2pDeviceAdapter(new ArrayList<>(), device -> {
+
+        });
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
