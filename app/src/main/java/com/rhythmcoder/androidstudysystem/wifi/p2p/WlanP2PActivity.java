@@ -5,10 +5,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.WpsInfo;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -30,7 +36,12 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
     private IntentFilter mIntentFilter;
 
     private WifiP2pDevice mP2pDevice;
+    private WifiP2pInfo mWifiP2pInfo;
     private P2pDeviceAdapter mAdapter;
+
+
+    private Button mBtnServer;
+    private Button mBtnClient;
 
     /**
      * A BroadcastReceiver that notifies of important Wi-Fi p2p events.
@@ -60,7 +71,6 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
                         if (wifiP2pDeviceList != null && !wifiP2pDeviceList.getDeviceList().isEmpty()) {
                             mAdapter.setDataList((new ArrayList<>(wifiP2pDeviceList.getDeviceList())));
                             mAdapter.notifyDataSetChanged();
-                            //【3连接对等设备】
                         } else {
                             toast("没有发现可用设备");
                         }
@@ -69,6 +79,14 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
             } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
                 // Respond to new connection or disconnections
                 CmdUtil.d(TAG, "receive:WIFI_P2P_CONNECTION_CHANGED_ACTION");
+
+                NetworkInfo networkInfo = (NetworkInfo) intent
+                        .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+                if (networkInfo.isConnected()) {
+                    mP2pManager.requestConnectionInfo(mChannel, info -> {
+                        mWifiP2pInfo = info;
+                    });
+                }
             } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
                 // Respond to this device's wifi state changing
                 CmdUtil.d(TAG, "receive:WIFI_P2P_THIS_DEVICE_CHANGED_ACTION");
@@ -80,6 +98,10 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wifi_p2p);
+        mBtnServer = findViewById(R.id.btn_server_start);
+        mBtnServer.setOnClickListener(this);
+        mBtnClient = findViewById(R.id.btn_client_send);
+        mBtnClient.setOnClickListener(this);
         findViewById(R.id.btn_discoverPeers).setOnClickListener(this);
         //【1初始化】3.向 Wi-Fi 点对点框架注册您的应用,得到一个Channel，它用于将应用连接到 WLAN 点对点连接框架
         mP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
@@ -94,9 +116,27 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
         mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
 
         RecyclerView recyclerView = findViewById(R.id.rv_devices);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mAdapter = new P2pDeviceAdapter(new ArrayList<>(), device -> {
+            mP2pDevice = device;
+            //【3连接对等设备】
+            WifiP2pConfig config = new WifiP2pConfig();
+            config.deviceAddress = device.deviceAddress;
+            config.wps.setup = WpsInfo.PBC;
+            mP2pManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
 
+                @Override
+                public void onSuccess() {
+                    //success logic
+                    toast("mP2pManager.connect SUCCESS!");
+                }
+
+                @Override
+                public void onFailure(int reason) {
+                    //failure logic
+                    toast("mP2pManager.connect Failure:" + reason);
+                }
+            });
         });
         recyclerView.setAdapter(mAdapter);
     }
@@ -131,7 +171,22 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
                     toast("发现对等设备失败:" + reasonCode);
                 }
             });
+        } else if (v.getId() == R.id.btn_server_start) {
+            new Server().setOnReceiveListener(new Server.OnReceiveListener() {
+                @Override
+                public void onReceive(String string) {
+                    toast(string);
+                }
+
+                @Override
+                public void onDisConnect() {
+                    toast("断开连接~");
+                }
+            }).start();
+        } else if (v.getId() == R.id.btn_client_send) {
+            new Client(mWifiP2pInfo.groupOwnerAddress.getHostAddress(), 8888).sendMessage("你好:" + SystemClock.uptimeMillis());
         }
+
     }
 
 
