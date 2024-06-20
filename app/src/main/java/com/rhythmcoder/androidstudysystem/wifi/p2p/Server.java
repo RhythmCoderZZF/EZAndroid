@@ -30,7 +30,7 @@ public class Server {
     public void start() {
         mthread = new Thread(() -> {
             try {
-                ServerSocket serverSocket = new ServerSocket(8888);
+                ServerSocket serverSocket = new ServerSocket(8988);
                 CmdUtil.d(TAG, "Server is running and waiting for client...");
 
                 // 等待客户端连接

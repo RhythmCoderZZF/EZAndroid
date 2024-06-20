@@ -10,9 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
+import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class Client {
     private String TAG = "Client";
@@ -34,8 +33,10 @@ public class Client {
             BufferedReader reader = null;
             try {
                 // 创建Socket连接到服务器
-                socket = new Socket(address, port);
-                CmdUtil.d(TAG, "Client starting send to:" + address + ":" + port);
+                socket = new Socket();
+                socket.bind(null);
+                socket.connect((new InetSocketAddress(address, port)), 5000);
+                CmdUtil.d(TAG, "Client starting send to:" + address + ":" + port + " socket isConnected:" + socket.isConnected());
 
                 // 获取输出流，用于向服务器发送数据
                 OutputStream output = socket.getOutputStream();
@@ -49,8 +50,8 @@ public class Client {
                 CmdUtil.d(TAG, "Sent to server: " + string);
 
                 // 接收服务器的响应
-                String response = reader.readLine();
-                CmdUtil.d(TAG, "Server response: " + response);
+//                String response = reader.readLine();
+//                CmdUtil.d(TAG, "Server response: " + response);
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
