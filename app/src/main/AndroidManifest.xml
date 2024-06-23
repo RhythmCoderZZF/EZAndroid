@@ -128,9 +128,11 @@
         <activity android:name=".background.service.BackgroundServiceActivity" />
         <activity android:name=".background.service.fgservice.BackgroundForegroundServiceActivity" />
         <activity android:name=".background.service.bindservice.BackgroundBindServiceActivity" />
-        <activity android:name=".wifi.WifiMainActivity" />
+        <activity android:name=".wifi.WifiMainActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".wifi.WlanScanActivity" />
-        <activity android:name=".wifi.p2p.WlanP2PActivity" />
+        <activity android:name=".wifi.p2p.WlanP2PActivity"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name=".background.service.BackgroundService"

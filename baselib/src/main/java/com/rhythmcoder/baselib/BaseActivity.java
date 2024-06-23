@@ -86,7 +86,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void toast(String str) {
-        Toast.makeText(this, str, Toast.LENGTH_SHORT).show();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(BaseActivity.this, str, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
