@@ -9,13 +9,13 @@ android {
     defaultConfig {
         applicationId = "com.rhythmcoder.androidstudysystem"
         minSdk = 28
+        //noinspection ExpiredTargetSdkVersion
         targetSdk = 28
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false

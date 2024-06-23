@@ -62,7 +62,7 @@ public class AlarmManagerCaseService extends Service {
         int anHour = 10 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AlarmManagerCaseService.class);
-        PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
+        PendingIntent pi = PendingIntent.getService(this, 0, i, PendingIntent.FLAG_IMMUTABLE);
         manager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
 
         String content = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());

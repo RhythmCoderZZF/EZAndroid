@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.os.Bundle;
 
 import com.rhythmcoder.androidstudysystem.background.BackgroundWorkMainActivity;
+import com.rhythmcoder.androidstudysystem.other.OtherMainActivity;
 import com.rhythmcoder.androidstudysystem.wifi.WifiMainActivity;
 import com.rhythmcoder.androidstudysystem.wifi.WlanScanActivity;
 import com.rhythmcoder.baselib.BaseActivity;
@@ -24,13 +25,13 @@ public class MainActivity extends BaseActivity {
     private final List<TitleBean> mList = new ArrayList<>();
 
     private void initRvDataList() {
+        mList.add(new TitleBean("其他","杂项", "", OtherMainActivity.class));
         mList.add(new TitleBean("USB", getString(R.string.usb_sub_title), getString(R.string.usb_info), UsbMainActivity.class));
         mList.add(new TitleBean(getString(R.string.permission), getString(R.string.permission_sub_title), getString(R.string.permission_info), PermissionMainActivity.class));
         mList.add(new TitleBean("NFC", NFCMainActivity.class));
         mList.add(new TitleBean(getString(R.string.storage), "", getString(R.string.storage_info), StorageMainActivity.class));
         mList.add(new TitleBean(getString(R.string.background), BackgroundWorkMainActivity.class));
         mList.add(new TitleBean("WIFI", WifiMainActivity.class));
-
     }
 
     @Override

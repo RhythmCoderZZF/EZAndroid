@@ -69,7 +69,7 @@ class USBMonitor {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
                 mPermissionIntent = PendingIntent.getBroadcast(mWeakContext.get(), 123, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE);
             } else {
-                mPermissionIntent = PendingIntent.getBroadcast(mWeakContext.get(), 123, new Intent(ACTION_USB_PERMISSION), 0);
+                mPermissionIntent = PendingIntent.getBroadcast(mWeakContext.get(), 123, new Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE);
             }
             final IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
             filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);

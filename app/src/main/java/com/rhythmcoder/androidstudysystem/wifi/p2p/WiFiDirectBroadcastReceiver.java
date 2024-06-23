@@ -95,7 +95,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo);
 
         void onGroupInfoAvailable(WifiP2pGroup wifiP2pInfo);
-        void onGroupInfoAvailable(WifiP2pGroup wifiP2pInfo);
 
         /**
          * Remove all peers and clear all fields. This is called on

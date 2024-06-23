@@ -133,6 +133,8 @@
         <activity android:name=".wifi.WlanScanActivity" />
         <activity android:name=".wifi.p2p.WlanP2PActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.rhythmcoder.androidstudysystem.other.ADBShellActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.other.OtherMainActivity" />
 
         <service
             android:name=".background.service.BackgroundService"
