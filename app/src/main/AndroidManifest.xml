@@ -135,6 +135,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.rhythmcoder.androidstudysystem.other.ADBShellActivity" />
         <activity android:name="com.rhythmcoder.androidstudysystem.other.OtherMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.media.MediaMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.media.MediaProjectionActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

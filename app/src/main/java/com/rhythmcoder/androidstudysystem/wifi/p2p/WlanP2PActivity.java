@@ -15,6 +15,7 @@ import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.view.PixelCopy;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -112,12 +113,7 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
             CmdUtil.e(TAG, "Cannot get Wi-Fi Direct system service.");
             return false;
         }
-        mChannel = mP2pManager.initialize(this, getMainLooper(), new WifiP2pManager.ChannelListener() {
-            @Override
-            public void onChannelDisconnected() {
-                toast("解散wifip2p群组，请重新进入Activity");
-            }
-        });
+        mChannel = mP2pManager.initialize(this, getMainLooper(), () -> toast("解散wifip2p群组，请重新进入Activity"));
         if (mChannel == null) {
             CmdUtil.e(TAG, "Cannot initialize Wi-Fi Direct.");
             return false;
