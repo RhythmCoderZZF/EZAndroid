@@ -3,6 +3,8 @@ package com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WpsInfo;
 import android.net.wifi.p2p.WifiP2pConfig;
@@ -17,35 +19,42 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.rhythmcoder.androidstudysystem.permission.PermissionUtil;
-import com.rhythmcoder.baselib.utils.LogUtil;
 
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-//【1初始化】1.在AndroidManifest中，请求在设备上使用 Wi-Fi 硬件的权限
+/**
+ * Wifi Direct封装类。
+ * 【1初始化】
+ * 【2发现对等设备】
+ * 【3连接对等设备】
+ */
+//【1初始化】1.在AndroidManifest中，请求在设备上使用 Wi-Fi 硬件的权限。注意区分targetSdk = 33的设备权限申请，具体参见官网
 public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadcastReceiverListener {
     private static final String TAG = "WiFiDirectMgr";
     private final Context mContext;
     private final OnWifiDirectListener mOnWifiDirectListener;
+
+    private ConnectivityManager mConnectivityManager;
     private WifiP2pManager mWifiP2pManager;
     private WifiP2pManager.Channel mChannel;
     private WiFiDirectBroadcastReceiver mWiFiDirectBroadcastReceiver;
-
-    private static boolean mIsStart = false;
     private WifiP2pDeviceList mTmpWifiP2pDeviceList;
     private WifiDirectConnectInfo mWifiDirectConnectInfo;
+
+    private boolean mIsStart = false;
     private boolean mIsServer = false;
+    private boolean mIsNetworkConnected = false;
 
     public WiFiDirectMgr(Context context, OnWifiDirectListener listener) {
         mContext = context;
         mOnWifiDirectListener = listener;
     }
 
-    //【1初始化】3.向 Wi-Fi 点对点框架注册您的应用,得到一个Channel，它用于将应用连接到 WLAN 点对点连接框架
     public void start(boolean asServer) {
         if (mIsStart) {
-            LogUtil.e(TAG, " already started");
+            Log.e(TAG, "already started");
             return;
         }
         if (!checkCapability()) {
@@ -58,40 +67,80 @@ public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadca
             mIsStart = true;
             mIsServer = asServer;
             mWiFiDirectBroadcastReceiver = new WiFiDirectBroadcastReceiver(mWifiP2pManager, mChannel, this);
-            //【1初始化】4.创建一个 intent 过滤器,注册广播
+            //【1初始化】3.创建一个 intent 过滤器,注册Wifi p2p广播
             mContext.registerReceiver(mWiFiDirectBroadcastReceiver, mWiFiDirectBroadcastReceiver.getIntentFilter());
-            //【1初始化】5.如果设备想作为p2p server，则可以通过createGroup创建一个组；否则可以调用startDiscovery去发现组
             if (asServer) {
+                Log.d(TAG, "====createGroup====\n");
+                //【2初始化】1.如果设备是作为server端，则需要通过createGroup创建一个组，自己作为GO(group owner)
                 mWifiP2pManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        Log.d(TAG, "Server create p2p group success");
+                        Log.i(TAG, "Server create p2p group success");
                     }
 
                     @Override
                     public void onFailure(int reason) {
-                        Log.e(TAG, "Server create p2p group failure");
+                        Log.e(TAG, "Server create p2p group failure:" + reason);
                     }
                 });
             } else {
-                startDiscovery();
+                Log.d(TAG, "====discoverPeers====\n");
+                //【2发现对等设备】1.作为Client端，需要调用startDiscovery去发现GO并连接
+                mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        //onSuccess() 方法只会通知您发现过程已成功，而不会提供它发现的实际对等设备（如果有）的任何信息
+                        //获取通知需要再broadcast中获取
+                        Log.i(TAG, "Client Successfully initialed peers discovery.");
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+                        mIsStart = false;
+                        Log.e(TAG, "Client Failed to initial peers discovery:" + reason);
+                    }
+                });
             }
         }).requestPermission();
     }
 
     public void stop() {
         if (mIsStart) {
-            stopDiscovery();
+            Log.d(TAG, "====stopPeerDiscovery====\n");
+            mWifiP2pManager.stopPeerDiscovery(mChannel, new WifiP2pManager.ActionListener() {
+                @Override
+                public void onSuccess() {
+                    Log.i(TAG, "Client Successfully stopped peers discovery.");
+                }
+
+                @Override
+                public void onFailure(int reason) {
+                    Log.e(TAG, "Client Failed to stop peers discovery:" + reason);
+                }
+            });
+            Log.d(TAG, "====cancelConnect====\n");
+            mWifiP2pManager.cancelConnect(mChannel, new WifiP2pManager.ActionListener() {
+                @Override
+                public void onSuccess() {
+                    Log.i(TAG, "cancel Connect onSuccess");
+                }
+
+                @Override
+                public void onFailure(int reason) {
+                    Log.e(TAG, "cancel Connect onFailure:" + reason);
+                }
+            });
             if (mIsServer) {
+                Log.d(TAG, "====removeGroup====\n");
                 mWifiP2pManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        Log.d(TAG, "Server remove p2p group success");
+                        Log.i(TAG, "Server remove p2p group success");
                     }
 
                     @Override
                     public void onFailure(int reason) {
-                        Log.d(TAG, "Server remove p2p group success");
+                        Log.e(TAG, "Server remove p2p group onFailure:" + reason);
                     }
                 });
             }
@@ -117,17 +166,29 @@ public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadca
                 WifiP2pConfig config = new WifiP2pConfig();
                 config.deviceAddress = device.deviceAddress;
                 config.wps.setup = WpsInfo.PBC;
+                Log.d(TAG, "====connect====\n");
+                //【3连接对等设备】1.获取可能的对等设备列表并选择要连接的设备后，请调用 connect() 方法以连接到该设备。
                 mWifiP2pManager.connect(mChannel, config, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
                         // WiFiDirectBroadcastReceiver will notify us. Ignore for now.
-                        Log.i(TAG, "wifi p2p connect device:" + deviceName + " success");
+                        Log.i(TAG, "Client connect device:" + deviceName + " success");
+                        //【3连接对等设备】3.当Client和Server已经连接过(设置>wifi直连显示"已连接"),不会回调WIFI_P2P_CONNECTION_CHANGED_ACTION，所以这里需要主动获取ConnectionInfo，执行接下来流程
+                        NetworkInfo activeNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+                        if (activeNetworkInfo.isConnected()) {
+                            mWifiP2pManager.requestConnectionInfo(mChannel, info -> {
+                                if (info != null && info.groupFormed) {
+                                    Log.i(TAG, "wifi p2p Group is already Formed");
+                                    WiFiDirectMgr.this.onConnectionInfoAvailable(info);
+                                }
+                            });
+                        }
                     }
 
                     @Override
                     public void onFailure(int reason) {
                         //failure logic
-                        Log.e(TAG, "wifi p2p connect device:" + deviceName + " failed");
+                        Log.e(TAG, "Client connect device:" + deviceName + " failed:" + reason);
                     }
                 });
             } else {
@@ -136,105 +197,46 @@ public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadca
         }
     }
 
-    //【2发现对等设备】1.调用 discoverPeers() 以检测范围内且可用于连接的可用对等设备。
-    private void startDiscovery() {
-        mWifiP2pManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                //onSuccess() 方法只会通知您发现过程已成功，而不会提供它发现的实际对等设备（如果有）的任何信息
-                Log.d(TAG, "Successfully initialed peers discovery.");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                mIsStart = false;
-                Log.e(TAG, "Failed to initial peers discovery.");
-            }
-        });
-    }
-
-    private void stopDiscovery() {
-        mWifiP2pManager.stopPeerDiscovery(mChannel, new WifiP2pManager.ActionListener() {
-            @Override
-            public void onSuccess() {
-                Log.d(TAG, "onSuccess: Successfully stopped peers discovery.");
-            }
-
-            @Override
-            public void onFailure(int reason) {
-                Log.e(TAG, "Failed to stop peers discovery.");
-            }
-        });
-    }
-
     public WifiDirectConnectInfo getmWifiDirectConnectInfo() {
         return mWifiDirectConnectInfo;
     }
 
     private boolean checkCapability() {
         if (!mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT)) {
-            LogUtil.e(TAG, "Capability: Wi-Fi Direct is not supported by this device.");
+            Log.e(TAG, "Capability: Wi-Fi Direct is not supported by this device.");
             return false;
         }
         WifiManager wifiManager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         if (wifiManager == null) {
-            LogUtil.e(TAG, "Capability: Cannot get Wi-Fi system service.");
+            Log.e(TAG, "Capability: Cannot get Wi-Fi system service.");
             return false;
         }
         if (!wifiManager.isP2pSupported()) {
-            LogUtil.e(TAG, "Capability: Wi-Fi Direct is not supported by the hardware or Wi-Fi is off.");
+            Log.e(TAG, "Capability: Wi-Fi Direct is not supported by the hardware or Wi-Fi is off.");
             return false;
         }
+        mConnectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifiP2pManager = (WifiP2pManager) mContext.getSystemService(Context.WIFI_P2P_SERVICE);
         if (mWifiP2pManager == null) {
-            LogUtil.e(TAG, "Capability: Cannot get Wi-Fi Direct system service.");
+            Log.e(TAG, "Capability: Cannot get Wi-Fi Direct system service.");
             return false;
         }
+        Log.d(TAG, "====initialize====\n");
+        //【1初始化】2.向 Wi-Fi 点对点框架注册您的应用,得到一个Channel，它用于将应用连接到 WLAN 点对点连接框架
         mChannel = mWifiP2pManager.initialize(mContext, mContext.getMainLooper(), () -> {
-            LogUtil.w(TAG, "Capability: The channel to the framework has been disconnected.");
+            Log.d(TAG, "Capability: The channel to the framework has been disconnected.");
         });
         if (mChannel == null) {
-            LogUtil.e(TAG, "Capability: Cannot initialize Wi-Fi Direct.");
+            Log.e(TAG, "Capability: Cannot initialize Wi-Fi Direct.");
             return false;
         }
         return true;
     }
 
-
-//    private void setGroupInfo(String groupInfo) {
-//        if (!TextUtils.isEmpty(groupInfo)) {
-//            mWifiDirectConnectInfo.mSourceMacAddr = groupInfo.substring(groupInfo.lastIndexOf("deviceAddress") + 15, groupInfo.lastIndexOf("primary type")).trim();
-//            String sourcePortStr = groupInfo.substring(groupInfo.lastIndexOf("WFD CtrlPort") + 14, groupInfo.lastIndexOf("WFD MaxThroughput")).trim();
-//            if (!TextUtils.isEmpty(sourcePortStr)) {
-//                int tmp = Integer.parseInt(sourcePortStr);
-//                mWifiDirectConnectInfo.mSourcePort = (tmp == 0) ? 7236 : tmp;
-//            }
-//        }
-//    }
-
-
-//    private void setConnInfo(String connectInfo) {
-//        if (!TextUtils.isEmpty(connectInfo)) {
-//            connectInfo = connectInfo.replace(":", "");
-//            String[] connectInfoArr = connectInfo.split(" ");
-//            for (int i = 0; i < connectInfoArr.length - 1; i += 2) {
-//                if ("groupFormed".equals(connectInfoArr[i])) {
-//                    mWifiDirectConnectInfo.isGroupFormed = "true".equals(connectInfoArr[i + 1]);
-//                } else if ("isGroupOwner".equals(connectInfoArr[i])) {
-//                    mWifiDirectConnectInfo.isGroupOwner = "true".equals(connectInfoArr[i + 1]);
-//                } else if ("groupOwnerAddress".equals(connectInfoArr[i])) {
-//                    if (!mWifiDirectConnectInfo.isGroupOwner) {
-//                        mWifiDirectConnectInfo.mSourceIp = connectInfoArr[i + 1].substring(1);
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList) {
-        Log.d(TAG, "\n====== onPeersAvailable wifiP2pDeviceList: ======\n" + wifiP2pDeviceList.toString() + "\n==================");
+        Log.d(TAG, "++++ onPeersAvailable wifiP2pDeviceList: ++++ \n" + wifiP2pDeviceList.toString() + "\n--------");
         mTmpWifiP2pDeviceList = wifiP2pDeviceList;
         List<String> deviceNames = wifiP2pDeviceList.getDeviceList().stream().map(wifiP2pDevice -> wifiP2pDevice.deviceName).collect(Collectors.toList());
         mOnWifiDirectListener.onDevicePeersDiscovered(deviceNames);
@@ -244,8 +246,7 @@ public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadca
     public void onConnectionInfoAvailable(WifiP2pInfo info) {
         if (info != null) {
             mWifiDirectConnectInfo = new WifiDirectConnectInfo();
-            String connectInfoStr = info.toString();
-            Log.d(TAG, "\n====== onConnectionInfoAvailable WifiP2pInfo: ======\n" + connectInfoStr + "\n==================");
+            Log.d(TAG, "++++  onConnectionInfoAvailable WifiP2pInfo: ++++ \n" + info + "\n--------");
             mWifiDirectConnectInfo.isGroupOwner = info.isGroupOwner;
             mWifiDirectConnectInfo.isGroupFormed = info.groupFormed;
             mWifiDirectConnectInfo.groupOwnerAddress = info.groupOwnerAddress;
@@ -253,40 +254,53 @@ public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadca
         }
     }
 
-    @Override
     public void onGroupInfoAvailable(WifiP2pGroup group) {
         if (group != null) {
-            String groupInfoStr = group.toString();
-            Log.d(TAG, "\n====== onGroupInfoAvailable WifiP2pGroup: ======\n" + groupInfoStr + "\n==================");
-//            setGroupInfo(groupInfoStr);
-//            mWifiDirectConnectInfo.mSourceMacAddr = group.
+            Log.d(TAG, "++++  onGroupInfoAvailable WifiP2pGroup: ++++ \n" + group + "\n--------");
             onSessionConnected(true);
         }
     }
 
     @Override
     public void setWifiP2pEnabled(boolean enabled) {
+        if (!enabled) {
+            Log.e(TAG, "wifi p2p is disabled");
+            stop();
+        }
     }
 
     @Override
     public void updateThisP2pDevice(WifiP2pDevice wifiP2pDevice) {
-
     }
 
     @Override
     public void onSessionConnected(boolean isConnected) {
-        mIsStart = isConnected;
-        if (!isConnected) {
-            mWifiDirectConnectInfo = null;
+        if (mIsNetworkConnected != isConnected) {
+            mIsNetworkConnected = isConnected;
+            if (!isConnected) {
+                mWifiDirectConnectInfo = null;
+            }
+            mOnWifiDirectListener.onSessionConnected(isConnected);
+            Log.i(TAG, "onSessionConnect status: " + (isConnected ? "connected" : "disConnected"));
         }
-        mOnWifiDirectListener.onSessionConnected(isConnected);
-        Log.i(TAG, "onSessionConnect status: " + (isConnected ? "connected" : "disConnected"));
     }
 
-
+    /**
+     * Wifi p2p 连接信息回调
+     */
     public interface OnWifiDirectListener {
+        /**
+         * 向Client返回对等p2p设备名称。Client需要选择某一个设备名称来通过{@link #connectDevice(String)}方法去建立连接
+         *
+         * @param deviceNames
+         */
         void onDevicePeersDiscovered(List<String> deviceNames);
 
+        /**
+         * p2p连接状态
+         *
+         * @param isConnected true:Client和Server连接成功
+         */
         void onSessionConnected(boolean isConnected);
     }
 

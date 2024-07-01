@@ -35,40 +35,38 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
-        //【1初始化】2.检查 WLAN 点对点连接是否已开启且受支持，向您的 activity 通知 Wi-Fi 点对点状态，并相应地做出反应
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
-            // UI update to indicate wifi p2p status.
+            //在设备上启用或停用 Wi-Fi 点对点连接时广播。
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
-            Log.d(TAG, "broadcast onReceive Wifi-P2P state changed - " + state);
+            Log.d(TAG, "broadcast onReceive Wifi-P2P state changed state:" + state);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                 wifiP2pBroadcastReceiverListener.setWifiP2pEnabled(true);
             } else {
                 wifiP2pBroadcastReceiverListener.setWifiP2pEnabled(false);
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-            //【2发现对等设备】2.如果发现过程成功并检测到对等设备，系统会广播 WIFI_P2P_PEERS_CHANGED_ACTION intent
+            //【2发现对等设备】2.在你调用 discoverPeers() 时广播。如果您在应用中处理此 intent，通常需要调用 requestPeers() 来获取更新后的对等设备列表。
             Log.d(TAG, "broadcast onReceive Wifi-P2P peers changed");
             if (manager != null) {
                 manager.requestPeers(channel, wifiP2pBroadcastReceiverListener::onPeersAvailable);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            // Connection state changed!
-            Log.d(TAG, "broadcast onReceive Wifi-P2P CONNECTION changed");
+            //【3连接对等设备】2.当设备的 Wi-Fi 连接状态更改时广播。应用可以使用 requestConnectionInfo()、requestNetworkInfo() 或 requestGroupInfo() 检索当前连接信息。
             if (manager == null) {
                 return;
             }
             NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-            if (networkInfo.isConnected()) {
-                Log.d(TAG, "broadcast networkInfo.isConnected");
+            boolean isNetworkConnected = networkInfo.isConnected();
+            Log.d(TAG, "broadcast onReceive Wifi-P2P CONNECTION changed isNetworkConnected:"+isNetworkConnected);
+            if (isNetworkConnected) {
                 // we are connected with the other device, request connection
                 // info to find group owner IP
                 manager.requestConnectionInfo(channel, wifiP2pBroadcastReceiverListener::onConnectionInfoAvailable);
             } else {
-                Log.e(TAG, "broadcast networkInfo disconnect");
-                // It's a disconnect
                 wifiP2pBroadcastReceiverListener.onSessionConnected(false);
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
+            //当设备的详细信息（例如设备名称）发生更改时广播。检应用可以使用 requestDeviceInfo() 检索当前连接信息。
             Log.d(TAG, "broadcast onReceive Wifi-P2P THIS_DEVICE changed");
             wifiP2pBroadcastReceiverListener.updateThisP2pDevice(intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE));
         }
@@ -89,8 +87,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         void onPeersAvailable(WifiP2pDeviceList wifiP2pDeviceList);
 
         void onConnectionInfoAvailable(WifiP2pInfo wifiP2pInfo);
-
-        void onGroupInfoAvailable(WifiP2pGroup wifiP2pInfo);
 
         void setWifiP2pEnabled(boolean enabled);
 

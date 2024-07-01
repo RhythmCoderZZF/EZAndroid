@@ -16,8 +16,6 @@ public class Client {
     private final String address;
     private final int port;
     private Socket socket;
-    int len;
-    byte buf[] = new byte[1024];
 
     public Client(String address, int port) {
         this.address = address;
@@ -27,28 +25,21 @@ public class Client {
     public void sendMessage(String string) {
         new Thread(() -> {
             BufferedWriter writer = null;
-            BufferedReader reader = null;
             try {
                 socket = new Socket();
                 socket.bind(null);
-                socket.connect((new InetSocketAddress(address, port)), 5000);
+                socket.connect((new InetSocketAddress(address, port)), 1000);
                 CmdUtil.d(TAG, "Client starting send to:" + address + ":" + port + " socket isConnected:" + socket.isConnected());
                 OutputStream output = socket.getOutputStream();
                 writer = new BufferedWriter(new OutputStreamWriter(output));
-                InputStream input = socket.getInputStream();
-                reader = new BufferedReader(new InputStreamReader(input));
                 writer.write(string);
                 CmdUtil.d(TAG, "Sent to server: " + string);
-
-                // 接收服务器的响应
-//                String response = reader.readLine();
-//                CmdUtil.d(TAG, "Server response: " + response);
+                writer.close();
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
-                    writer.close();
-                    reader.close();
+                    socket.close();
                 } catch (Exception e1) {
                     e1.printStackTrace();
                 }

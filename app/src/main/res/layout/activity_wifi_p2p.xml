@@ -1,92 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-        <LinearLayout
-            android:id="@+id/ll_wifi_devices"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textView10"
-                style="@style/BaseCategoryTextView.Normal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="点击列表，连接可用的对等设备:"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_group_info" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_devices"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView10" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_client"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_wifi_devices">
-
-            <TextView
-                android:id="@+id/textView8"
-                style="@style/BaseTextView.Normal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="当前设备被作为wifip2p Client端，点击向服务端发送消息:" />
-
-            <Button
-                android:id="@+id/btn_client_send"
-                style="@style/BaseButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="发送" />
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_wifi_devices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_server"
-            style="@style/BaseTextView.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="当前设备被作为wifip2p Server端启动,等待Client发送消息..."
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_client" />
-
-        <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/textView10"
             style="@style/BaseCategoryTextView.Normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="点击解散wifip2p群组:"
+            android:text="点击列表，连接可用的对等设备:"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_server" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_group_info" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_devices"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_client"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_wifi_devices">
+
+        <TextView
+            android:id="@+id/textView8"
+            style="@style/BaseTextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="当前设备被作为wifip2p Client端，点击向服务端发送消息:" />
 
         <Button
-            android:id="@+id/btn_remove_group"
+            android:id="@+id/btn_client_send"
             style="@style/BaseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="解散"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            android:text="发送" />
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+    <TextView
+        android:id="@+id/tv_server"
+        style="@style/BaseTextView.Normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="当前设备被作为wifip2p Server端启动,等待Client发送消息..."
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_client" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

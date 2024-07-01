@@ -49,22 +49,20 @@ public class Server {
                     Log.d(TAG, "Client connected: " + clientSocket);
                     InputStream input = clientSocket.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        Log.d(TAG, "Received String from client: " + line);
-                        mOnReceiveListener.onReceive(line);
-                        if ("bye!".equalsIgnoreCase(line)) {
-                            Log.d(TAG, "disconnect from client: " + line);
-                            mOnReceiveListener.onDisConnect();
-                            return;
-                        }
+                    String line = "";
+                    String appendLine = "";
+                    while ((appendLine = reader.readLine()) != null) {
+                        line += appendLine;
                     }
+                    mOnReceiveListener.onReceive(line);
+                    Log.d(TAG, "clientSocket over receive String:" + line);
+                    reader.close();
+                    clientSocket.close();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 try {
-                    clientSocket.close();
                     serverSocket.close();
                 } catch (Exception e) {
                     e.printStackTrace();

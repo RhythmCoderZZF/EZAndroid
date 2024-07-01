@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhythmcoder.androidstudysystem.R;
-import com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect.P2pDeviceAdapter;
 import com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect.WiFiDirectMgr;
 import com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect.WifiDirectConnectInfo;
 import com.rhythmcoder.baselib.BaseActivity;
@@ -27,7 +26,6 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
     private P2pDeviceAdapter mAdapter;
 
     private Button mBtnClient;
-    private Button mBtnRemoveGroup;
     private Server server;
     private Client client;
 
@@ -38,17 +36,19 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_wifi_p2p);
         mBtnClient = findViewById(R.id.btn_client_send);
         mBtnClient.setOnClickListener(this);
-        mBtnRemoveGroup = findViewById(R.id.btn_remove_group);
-        mBtnRemoveGroup.setOnClickListener(this);
-
         RecyclerView recyclerView = findViewById(R.id.rv_devices);
+
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mAdapter = new P2pDeviceAdapter(new ArrayList<>(), deviceName -> {
             mP2pManager.connectDevice(deviceName);
         });
+        boolean isDeviceAsServer = !Build.MODEL.equals("23013RK75C");
+        if (isDeviceAsServer) {
+            findViewById(R.id.ll_wifi_devices).setVisibility(View.GONE);
+        }
         recyclerView.setAdapter(mAdapter);
         mP2pManager = new WiFiDirectMgr(this, this);
-        mP2pManager.start(!Build.MODEL.equals("23013RK75C"));
+        mP2pManager.start(isDeviceAsServer);
     }
 
 
@@ -91,20 +91,23 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
                 }
             }
         } else {
-//            if (server1 != null) {
-//                server1.closeServer();
-//            }
-//            if (client1 != null) {
-//                client1.closeClient();
-//            }
+            if (server != null) {
+                server.closeServer();
+                server = null;
+            }
+            if (client != null) {
+                client.closeClient();
+                client = null;
+            }
         }
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_client_send) {
-            client.sendMessage("你好:" + SystemClock.uptimeMillis());
-        } else if (v.getId() == R.id.btn_remove_group) {
+            if (client != null) {
+                client.sendMessage("你好:" + SystemClock.uptimeMillis());
+            }
         }
     }
 
@@ -112,7 +115,5 @@ public class WlanP2PActivity extends BaseActivity implements View.OnClickListene
     protected void onDestroy() {
         super.onDestroy();
         mP2pManager.stop();
-        if (server != null) server.closeServer();
-        if (client != null) client.closeClient();
     }
 }

@@ -1,4 +1,4 @@
-package com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect;
+package com.rhythmcoder.androidstudysystem.wifi.p2p;
 
 import android.view.LayoutInflater;
 import android.view.View;
