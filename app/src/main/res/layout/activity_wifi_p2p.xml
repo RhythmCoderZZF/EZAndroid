@@ -8,53 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/textView6"
-            style="@style/BaseCategoryTextView.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="点击发现对等设备:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/btn_discoverPeers"
-            style="@style/BaseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="discoverPeers"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6" />
-
-        <TextView
-            android:id="@+id/tv_p2p_device"
-            style="@style/BaseTextView.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="WifiP2pDevice信息:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_discoverPeers" />
-
-
-        <TextView
-            android:id="@+id/tv_p2p_info"
-            style="@style/BaseTextView.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="WifiP2pInfo信息:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_p2p_device" />
-
-
-
-        <TextView
-            android:id="@+id/tv_group_info"
-            style="@style/BaseTextView.Small"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="WifiP2pGroup信息:"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_p2p_info" />
 
         <LinearLayout
             android:id="@+id/ll_wifi_devices"
@@ -62,7 +15,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_group_info">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/textView10"

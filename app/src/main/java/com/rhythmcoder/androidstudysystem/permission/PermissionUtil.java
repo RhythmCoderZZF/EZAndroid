@@ -17,20 +17,25 @@ import androidx.core.content.ContextCompat;
 public class PermissionUtil {
     private final Context context;
     private final String permission;
+    private final OnPermissionListener mListener;
     private ActivityResultLauncher<String> mRequestPermissionLauncher;
 
-    public PermissionUtil(Context context, String permission) {
+    public PermissionUtil(Context context, String permission, OnPermissionListener listener) {
         this.context = context;
         this.permission = permission;
+        mListener = listener;
 
         mRequestPermissionLauncher = ((ComponentActivity) context).registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {
             if (result) {
                 toastPermissionIsGranted(permission);
+                if (mListener != null) mListener.onPermissionGranted(true);
             } else {
                 if (shouldShowRequestPermissionRationale((Activity) context, permission)) {
                     toastTellCustomerWeNeedPermission(permission);
+                    if (mListener != null) mListener.onPermissionGranted(false);
                 } else {
                     toastCustomerNeverAllowPermission(permission);
+                    if (mListener != null) mListener.onPermissionGranted(false);
                 }
             }
         });
@@ -39,6 +44,7 @@ public class PermissionUtil {
     public void requestPermission() {
         if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
             toastAlreadyGetPermission(permission);
+            if (mListener != null) mListener.onPermissionGranted(true);
         } else if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, permission)) {
             showInContextUI(permission);
         } else {
@@ -51,8 +57,10 @@ public class PermissionUtil {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("Attention");
         dialog.setMessage("We need permission to Continue the action or workflow in this app !!");
+        dialog.setCancelable(false);
         dialog.setNegativeButton("cancel", (d, which) -> {
             d.dismiss();
+            if (mListener != null) mListener.onPermissionGranted(false);
         });
         dialog.setPositiveButton("ok", (dialog1, which) -> {
             dialog1.dismiss();
@@ -75,6 +83,10 @@ public class PermissionUtil {
 
     private void toastCustomerNeverAllowPermission(String permission) {
         Toast.makeText(context, "user are not allowed to grant " + permission.substring(permission.lastIndexOf(".")), Toast.LENGTH_SHORT).show();
+    }
+
+    public interface OnPermissionListener {
+        void onPermissionGranted(boolean granted);
     }
 
 }

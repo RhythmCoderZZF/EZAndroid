@@ -1,7 +1,5 @@
-package com.rhythmcoder.androidstudysystem.wifi.p2p;
+package com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect;
 
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +14,15 @@ import java.util.List;
 
 public class P2pDeviceAdapter extends RecyclerView.Adapter<P2pDeviceAdapter.MyViewHolder> {
 
-    private List<WifiP2pDevice> mDataList;
+    private List<String> mDataList;
     private OnItemClickListener onItemClickListener;
 
-    public P2pDeviceAdapter(List<WifiP2pDevice> dataList, OnItemClickListener listener) {
+    public P2pDeviceAdapter(List<String> dataList, OnItemClickListener listener) {
         this.mDataList = dataList;
         this.onItemClickListener = listener;
     }
 
-    public void setDataList(List<WifiP2pDevice> dataList) {
+    public void setDataList(List<String> dataList) {
         this.mDataList = dataList;
     }
 
@@ -37,9 +35,8 @@ public class P2pDeviceAdapter extends RecyclerView.Adapter<P2pDeviceAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        WifiP2pDevice data = mDataList.get(position);
-        holder.tvTitle.setText(data.deviceName);
-        holder.tvSubTitle.setText(data.deviceAddress);
+        String deviceName = mDataList.get(position);
+        holder.tvTitle.setText(deviceName);
     }
 
     @Override
@@ -49,26 +46,22 @@ public class P2pDeviceAdapter extends RecyclerView.Adapter<P2pDeviceAdapter.MyVi
 
     class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle;
-        TextView tvSubTitle;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tv_title);
-            tvSubTitle = itemView.findViewById(R.id.tv_sub_title);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             int position = getAdapterPosition();
-            WifiP2pDevice data = mDataList.get(position);
-            v.setOnClickListener(v1 -> {
-                onItemClickListener.onClick(data);
-            });
+            String data = mDataList.get(position);
+            onItemClickListener.onClick(data);
         }
     }
 
-    interface OnItemClickListener {
-        void onClick(WifiP2pDevice device);
+    public interface OnItemClickListener {
+        void onClick(String device);
     }
 }

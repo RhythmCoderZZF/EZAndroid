@@ -1,5 +1,6 @@
-package com.rhythmcoder.androidstudysystem.wifi.p2p;
+package com.rhythmcoder.androidstudysystem.wifi.p2p.wifidirect;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -11,19 +12,19 @@ import android.net.wifi.p2p.WifiP2pGroup;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.Channel;
-
-import com.rhythmcoder.baselib.cmd.CmdUtil;
+import android.util.Log;
 
 /**
  * A BroadcastReceiver that notifies of important wifi p2p events.
  */
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
-    private static final String TAG = "WiFiDirectBroadcastReceiver";
+    private static final String TAG = "WiFiDirectMgr.WiFiP2PDirectBroadcastReceiver";
     private WifiP2pManager manager;
     private Channel channel;
     private final WifiP2pBroadcastReceiverListener wifiP2pBroadcastReceiverListener;
     private IntentFilter mIntentFilter;
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel, WifiP2pBroadcastReceiverListener wifiP2pBroadcastReceiverListener) {
         super();
         this.manager = manager;
@@ -31,11 +32,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         this.wifiP2pBroadcastReceiverListener = wifiP2pBroadcastReceiverListener;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see android.content.BroadcastReceiver#onReceive(android.content.Context,
-     * android.content.Intent)
-     */
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -43,43 +39,43 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             // UI update to indicate wifi p2p status.
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
-            CmdUtil.d(TAG, "onReceive P2P state changed - " + state);
+            Log.d(TAG, "broadcast onReceive Wifi-P2P state changed - " + state);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                 wifiP2pBroadcastReceiverListener.setWifiP2pEnabled(true);
             } else {
                 wifiP2pBroadcastReceiverListener.setWifiP2pEnabled(false);
-                wifiP2pBroadcastReceiverListener.resetData();
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             //【2发现对等设备】2.如果发现过程成功并检测到对等设备，系统会广播 WIFI_P2P_PEERS_CHANGED_ACTION intent
-            CmdUtil.d(TAG, "onReceive P2P peers changed");
+            Log.d(TAG, "broadcast onReceive Wifi-P2P peers changed");
             if (manager != null) {
                 manager.requestPeers(channel, wifiP2pBroadcastReceiverListener::onPeersAvailable);
             }
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            CmdUtil.d(TAG, "onReceive P2P CONNECTION changed");
+            // Connection state changed!
+            Log.d(TAG, "broadcast onReceive Wifi-P2P CONNECTION changed");
             if (manager == null) {
                 return;
             }
             NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
             if (networkInfo.isConnected()) {
+                Log.d(TAG, "broadcast networkInfo.isConnected");
                 // we are connected with the other device, request connection
                 // info to find group owner IP
                 manager.requestConnectionInfo(channel, wifiP2pBroadcastReceiverListener::onConnectionInfoAvailable);
-                manager.requestGroupInfo(channel,wifiP2pBroadcastReceiverListener::onGroupInfoAvailable);
             } else {
+                Log.e(TAG, "broadcast networkInfo disconnect");
                 // It's a disconnect
-                wifiP2pBroadcastReceiverListener.resetData();
+                wifiP2pBroadcastReceiverListener.onSessionConnected(false);
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-            CmdUtil.d(TAG, "onReceive P2P THIS_DEVICE changed");
+            Log.d(TAG, "broadcast onReceive Wifi-P2P THIS_DEVICE changed");
             wifiP2pBroadcastReceiverListener.updateThisP2pDevice(intent.getParcelableExtra(WifiP2pManager.EXTRA_WIFI_P2P_DEVICE));
         }
     }
 
     public IntentFilter getIntentFilter() {
         if (mIntentFilter == null) {
-
             mIntentFilter = new IntentFilter();
             mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
             mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -96,15 +92,11 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
         void onGroupInfoAvailable(WifiP2pGroup wifiP2pInfo);
 
-        /**
-         * Remove all peers and clear all fields. This is called on
-         * BroadcastReceiver receiving a state change event.
-         */
-        void resetData();
-
         void setWifiP2pEnabled(boolean enabled);
 
         void updateThisP2pDevice(WifiP2pDevice wifiP2pDevice);
+
+        void onSessionConnected(boolean isConnected);
     }
 
     public static String getDeviceStatus(WifiP2pDevice wifiP2pDevice) {
