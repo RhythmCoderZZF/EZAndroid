@@ -144,6 +144,9 @@
         <activity android:name="com.rhythmcoder.androidstudysystem.ui.paint.UIPaintActivity" />
         <activity android:name="com.rhythmcoder.androidstudysystem.sensor.SensorMainActivity" />
         <activity android:name="com.rhythmcoder.androidstudysystem.sensor.SensorBaseActivity" />
+        <!-- [UI-Views] -->
+        <activity android:name="com.rhythmcoder.androidstudysystem.ui_views.UIViewsMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.ui_views.notification.UIViewsNotificationActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

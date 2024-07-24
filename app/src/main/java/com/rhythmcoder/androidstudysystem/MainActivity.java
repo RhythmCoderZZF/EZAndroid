@@ -10,8 +10,8 @@ import com.rhythmcoder.androidstudysystem.media.MediaMainActivity;
 import com.rhythmcoder.androidstudysystem.other.OtherMainActivity;
 import com.rhythmcoder.androidstudysystem.sensor.SensorMainActivity;
 import com.rhythmcoder.androidstudysystem.ui.UIMainActivity;
+import com.rhythmcoder.androidstudysystem.ui_views.UIViewsMainActivity;
 import com.rhythmcoder.androidstudysystem.wifi.WifiMainActivity;
-import com.rhythmcoder.androidstudysystem.wifi.WlanScanActivity;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.ListAdapter;
 import com.rhythmcoder.baselib.TitleBean;
@@ -37,6 +37,7 @@ public class MainActivity extends BaseActivity {
         mList.add(new TitleBean("WIFI", WifiMainActivity.class));
         mList.add(new TitleBean("Sensor", SensorMainActivity.class));
         mList.add(new TitleBean("UI", UIMainActivity.class));
+        mList.add(new TitleBean("UI-Views", UIViewsMainActivity.class));
         mList.add(new TitleBean("Media","多媒体","", MediaMainActivity.class));
     }
 
