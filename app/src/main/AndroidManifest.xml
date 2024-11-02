@@ -137,6 +137,7 @@
         <!-- [Media] -->
         <activity android:name=".media.MediaMainActivity" />
         <activity android:name=".media.MediaProjectionRecordActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.media.camera.CameraIntentActivity" />
         <!-- [Other] -->
         <activity android:name=".other.ADBShellActivity" />
         <activity android:name=".other.OtherMainActivity" />

@@ -3,6 +3,7 @@ package com.rhythmcoder.androidstudysystem.media;
 import android.os.Bundle;
 
 import com.rhythmcoder.androidstudysystem.R;
+import com.rhythmcoder.androidstudysystem.media.camera.CameraIntentActivity;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.ListAdapter;
 import com.rhythmcoder.baselib.TitleBean;
@@ -15,6 +16,7 @@ public class MediaMainActivity extends BaseActivity {
         List<TitleBean> list = new ArrayList<>();
         list.add(new TitleBean("录屏", "使用MediaProjection简单实现录屏", "", MediaProjectionSimpleActivity.class));
         list.add(new TitleBean("录屏+录音", "MediaProjection + MediaRecord实现录屏录音", "", MediaProjectionRecordActivity.class));
+        list.add(new TitleBean("Camera", "使用Intent操作默认相机应用", "", CameraIntentActivity.class));
         return list;
     }
 
