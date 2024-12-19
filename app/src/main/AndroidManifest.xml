@@ -52,6 +52,9 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!--[Sensor]-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -153,6 +156,7 @@
         <!-- [UI-Views] -->
         <activity android:name="com.rhythmcoder.androidstudysystem.ui_views.UIViewsMainActivity" />
         <activity android:name="com.rhythmcoder.androidstudysystem.ui_views.notification.UIViewsNotificationActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.sensor.vibrator.VibratorActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

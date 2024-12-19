@@ -3,6 +3,7 @@ package com.rhythmcoder.androidstudysystem.sensor;
 import android.os.Bundle;
 
 import com.rhythmcoder.androidstudysystem.R;
+import com.rhythmcoder.androidstudysystem.sensor.vibrator.VibratorActivity;
 import com.rhythmcoder.androidstudysystem.ui.paint.UIPaintActivity;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.ListAdapter;
@@ -15,6 +16,7 @@ public class SensorMainActivity extends BaseActivity {
     private List<TitleBean> initRvDataList() {
         List<TitleBean> list = new ArrayList<>();
         list.add(new TitleBean("基本使用", SensorBaseActivity.class));
+        list.add(new TitleBean("震动", VibratorActivity.class));
         return list;
     }
 
