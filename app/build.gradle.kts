@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.rhythmcoder.androidstudysystem"
-        minSdk = 28
+        minSdk = 29
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 28
         versionCode = 1

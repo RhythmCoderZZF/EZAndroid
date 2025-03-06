@@ -1,61 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        style="@style/BaseCategoryTextView.Normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="调用 Intent 来拍照:" />
 
-        <TextView
-            android:id="@+id/tv_camera_id"
-            style="@style/BaseTextView.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="摄像头id:" />
+    <Button
+        android:id="@+id/btn_lunch_camera"
+        style="@style/BaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="启动相机" />
 
-        <EditText
-            android:id="@+id/edt_camera_id"
-            style="@style/BaseTextView.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请输入摄像头id"
-            android:lines="1" />
+    <TextView
+        style="@style/BaseCategoryTextView.Normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="调用 Intent 来录像:" />
 
-        <TextureView
-            android:id="@+id/texture"
-            android:layout_width="160dp"
-            android:layout_height="200dp"
-            android:layout_margin="6dp" />
-
-
-        <TextView
-            style="@style/BaseCategoryTextView.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="调用 Intent 来拍照:" />
-
-        <Button
-            android:id="@+id/btn_lunch_camera"
-            style="@style/BaseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="启动相机" />
-
-        <TextView
-            style="@style/BaseCategoryTextView.Normal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="调用 Intent 来录像:" />
-
-        <Button
-            android:id="@+id/btn_lunch_video"
-            style="@style/BaseButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="启动录像" />
-    </LinearLayout>
-
-
-</ScrollView>
+    <Button
+        android:id="@+id/btn_lunch_video"
+        style="@style/BaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="启动录像" />
+</LinearLayout>

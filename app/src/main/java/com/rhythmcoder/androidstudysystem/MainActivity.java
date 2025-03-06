@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.os.Bundle;
 
 import com.rhythmcoder.androidstudysystem.background.BackgroundWorkMainActivity;
+import com.rhythmcoder.androidstudysystem.camera.CameraMainActivity;
 import com.rhythmcoder.androidstudysystem.media.MediaMainActivity;
 import com.rhythmcoder.androidstudysystem.other.OtherMainActivity;
 import com.rhythmcoder.androidstudysystem.sensor.SensorMainActivity;
@@ -38,7 +39,8 @@ public class MainActivity extends BaseActivity {
         mList.add(new TitleBean("Sensor", SensorMainActivity.class));
         mList.add(new TitleBean("UI", UIMainActivity.class));
         mList.add(new TitleBean("UI-Views", UIViewsMainActivity.class));
-        mList.add(new TitleBean("Media","多媒体","", MediaMainActivity.class));
+        mList.add(new TitleBean("多媒体(Media)","","", MediaMainActivity.class));
+        mList.add(new TitleBean("相机(Camera)","Intent启动相机","", CameraMainActivity.class));
     }
 
     @Override

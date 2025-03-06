@@ -14,13 +14,13 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-public class PermissionUtil {
+public class PermissionUtil2 {
     private final Context context;
     private final String permission;
     private final OnPermissionListener mListener;
     private ActivityResultLauncher<String> mRequestPermissionLauncher;
 
-    public PermissionUtil(Context context, String permission, OnPermissionListener listener) {
+    public PermissionUtil2(Context context, String permission, OnPermissionListener listener) {
         this.context = context;
         this.permission = permission;
         mListener = listener;

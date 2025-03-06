@@ -13,14 +13,13 @@ import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Surface;
-import android.view.SurfaceView;
 import android.view.View;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import com.rhythmcoder.androidstudysystem.R;
-import com.rhythmcoder.androidstudysystem.permission.PermissionUtil;
+import com.rhythmcoder.androidstudysystem.permission.PermissionUtil2;
 import com.rhythmcoder.baselib.BaseActivity;
 
 import java.io.File;
@@ -75,7 +74,7 @@ public class MediaProjectionRecordActivity extends BaseActivity implements View.
         setContentView(R.layout.activity_media_projection_record);
         mediaProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
         findViewById(R.id.btn_record).setOnClickListener(this);
-        new PermissionUtil(this, Manifest.permission.RECORD_AUDIO, null).requestPermission();
+        new PermissionUtil2(this, Manifest.permission.RECORD_AUDIO, null).requestPermission();
     }
 
     private void startScreenCapture() {

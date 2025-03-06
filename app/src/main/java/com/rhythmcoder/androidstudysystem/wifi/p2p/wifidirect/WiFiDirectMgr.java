@@ -18,7 +18,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.rhythmcoder.androidstudysystem.permission.PermissionUtil;
+import com.rhythmcoder.androidstudysystem.permission.PermissionUtil2;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -60,7 +60,7 @@ public class WiFiDirectMgr implements WiFiDirectBroadcastReceiver.WifiP2pBroadca
         if (!checkCapability()) {
             return;
         }
-        new PermissionUtil(mContext, Manifest.permission.ACCESS_FINE_LOCATION, granted -> {
+        new PermissionUtil2(mContext, Manifest.permission.ACCESS_FINE_LOCATION, granted -> {
             if (!granted) {
                 return;
             }
