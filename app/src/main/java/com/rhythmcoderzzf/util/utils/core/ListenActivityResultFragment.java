@@ -23,6 +23,7 @@ public class ListenActivityResultFragment extends Fragment implements ListenActi
     @Override
     public void requestPermissionForResult(String[] permissions, int requestCode, OnPermissionResultCallback callback) {
         onPermissionResultCallback = callback;
+        requestPermissions(permissions, requestCode);
     }
 
     @Override

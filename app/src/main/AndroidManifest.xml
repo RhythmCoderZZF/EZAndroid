@@ -159,6 +159,7 @@
         <activity android:name="com.rhythmcoder.androidstudysystem.sensor.vibrator.VibratorActivity" />
         <!--[Camera]-->
         <activity android:name="com.rhythmcoder.androidstudysystem.camera.CameraMainActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.camera.Camera2APIActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

@@ -1,20 +1,20 @@
 package com.rhythmcoderzzf.util.utils;
 
-import static androidx.core.app.ActivityCompat.requestPermissions;
-import static androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale;
-
 import static com.rhythmcoderzzf.util.utils.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.rhythmcoderzzf.util.utils.core.ListenActivityResultRequest;
 
+import java.util.Arrays;
+
 public class PermissionUtil {
+    private final String TAG = PermissionUtil.class.getSimpleName();
     private static String HOLDER_TAG = "permission_holder";
     private final Activity context;
     private OnPermissionListener mListener;
@@ -26,19 +26,53 @@ public class PermissionUtil {
         mListenActivityResultRequest = holderFragmentFor(HOLDER_TAG, context);
     }
 
-    public void requestPermission(String permission, OnPermissionListener listener) {
+    public void requestPermission(String[] permissions, OnPermissionListener listener) {
         mListener = listener;
-        if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
-            mListener.onPermissionGranted(true);
-        } else if (shouldShowRequestPermissionRationale(context, permission)) {
-            showInContextUI(permission);
-        } else {
-            requestPermissions(context, new String[]{permission}, 0);
+        int permissionGrantedCount = 0;
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+                permissionGrantedCount++;
+            }
+            /*else if (shouldShowRequestPermissionRationale(context, permission)) {
+                showInContextUI(permission);
+            }*/
+        }
+        if (permissions.length != permissionGrantedCount) {
+            Log.d(TAG, "start requestPermission,permissions:" + Arrays.toString(permissions));
+            mListenActivityResultRequest.requestPermissionForResult(permissions, 0, (requestCode, _permissions, grantResults) -> {
+                Log.d(TAG, "requestPermissionForResult,permissions:" + Arrays.toString(_permissions) + " grantResults:" + Arrays.toString(grantResults));
+                // If request is cancelled, the result arrays are empty.
+                if (_permissions.length > 0) {
+                    int allGrantResult = PackageManager.PERMISSION_GRANTED;
+                    for (int grantResult : grantResults) {
+                        allGrantResult += grantResult;
+                    }
+                    if (allGrantResult == PackageManager.PERMISSION_GRANTED) {
+                        mListener.onPermissionGranted(true);
+                    } else {
+                        mListener.onPermissionGranted(false);
+                    }
+                    return;
+                }
+                mListener.onPermissionGranted(false);
+                /*if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    if (shouldShowRequestPermissionRationale(context, permissions[0])) {
+                        mListener.onPermissionGranted(false);
+                    } else {
+                        mListener.onPermissionGranted(false);
+                    }
+                }*/
+            });
+
         }
     }
 
+    public interface OnPermissionListener {
+        void onPermissionGranted(boolean granted);
+    }
 
-    private void showInContextUI(String permission) {
+   /* private void showInContextUI(String permission) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("Attention");
         dialog.setMessage("We need permission to Continue the action or workflow in this app !!");
@@ -66,11 +100,5 @@ public class PermissionUtil {
             });
         });
         dialog.show();
-    }
-
-
-    public interface OnPermissionListener {
-        void onPermissionGranted(boolean granted);
-    }
-
+    }*/
 }
