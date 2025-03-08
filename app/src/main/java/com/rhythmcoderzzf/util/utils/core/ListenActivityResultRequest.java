@@ -5,9 +5,9 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 public interface ListenActivityResultRequest {
-    void startActivity(Intent intent, int requestCode, OnActivityResultCallBack callBack);
+    void startActivityForResult(Intent intent, int requestCode, OnActivityResultCallBack callBack);
 
-    void requestPermission(String[] permissions, int requestCode, OnPermissionResultCallback callback);
+    void requestPermissionForResult(String[] permissions, int requestCode, OnPermissionResultCallback callback);
 
     interface OnActivityResultCallBack {
         void onActivityResult(int requestCode, int resultCode, Intent data);

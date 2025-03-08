@@ -15,13 +15,13 @@ public class ListenActivityResultFragment extends Fragment implements ListenActi
     private ListenActivityResultRequest.OnPermissionResultCallback onPermissionResultCallback;
 
     @Override
-    public void startActivity(Intent intent, int requestCode, ListenActivityResultRequest.OnActivityResultCallBack callBack) {
+    public void startActivityForResult(Intent intent, int requestCode, ListenActivityResultRequest.OnActivityResultCallBack callBack) {
         mCallBackMap.put(requestCode, callBack);
         startActivityForResult(intent, requestCode);
     }
 
     @Override
-    public void requestPermission(String[] permissions, int requestCode, OnPermissionResultCallback callback) {
+    public void requestPermissionForResult(String[] permissions, int requestCode, OnPermissionResultCallback callback) {
         onPermissionResultCallback = callback;
     }
 

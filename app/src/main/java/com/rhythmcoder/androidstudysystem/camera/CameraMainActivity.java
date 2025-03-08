@@ -16,6 +16,7 @@ public class CameraMainActivity extends BaseActivity {
     private List<TitleBean> initRvDataList() {
         List<TitleBean> list = new ArrayList<>();
         list.add(new TitleBean("Camera", "通过Intent启动相机", "", CameraIntentActivity.class));
+        list.add(new TitleBean("Camera", "通过Intent启动相机", "", CameraIntentActivity.class));
         return list;
     }
 

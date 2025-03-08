@@ -49,7 +49,7 @@ public class PermissionUtil {
         });
         dialog.setPositiveButton("ok", (dialog1, which) -> {
             dialog1.dismiss();
-            mListenActivityResultRequest.requestPermission(new String[]{permission}, 0, (requestCode, permissions, grantResults) -> {
+            mListenActivityResultRequest.requestPermissionForResult(new String[]{permission}, 0, (requestCode, permissions, grantResults) -> {
                 switch (requestCode) {
                     case 0:
                         // If request is cancelled, the result arrays are empty.
