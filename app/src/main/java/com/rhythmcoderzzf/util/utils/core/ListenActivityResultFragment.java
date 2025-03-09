@@ -1,7 +1,6 @@
 package com.rhythmcoderzzf.util.utils.core;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
@@ -11,12 +10,20 @@ import androidx.fragment.app.FragmentManager;
 
 public class ListenActivityResultFragment extends Fragment implements ListenActivityResultRequest {
     private static String HOLDER_TAG = "";
-    private SparseArray<ListenActivityResultRequest.OnActivityResultCallBack> mCallBackMap = new SparseArray<>();
+    private SparseArray<ListenActivityResultRequest.OnActivityResultCallBack> activityResultCallbackMap;
     private ListenActivityResultRequest.OnPermissionResultCallback onPermissionResultCallback;
+    private ListenActivityResultRequest.OnLifecycleCallback onLifecycleCallback;
 
     @Override
+    public void registerLifecycleListener(ListenActivityResultRequest.OnLifecycleCallback callback) {
+        onLifecycleCallback = callback;
+    }
+    @Override
     public void startActivityForResult(Intent intent, int requestCode, ListenActivityResultRequest.OnActivityResultCallBack callBack) {
-        mCallBackMap.put(requestCode, callBack);
+        if (activityResultCallbackMap == null) {
+            activityResultCallbackMap = new SparseArray<>();
+        }
+        activityResultCallbackMap.put(requestCode, callBack);
         startActivityForResult(intent, requestCode);
     }
 
@@ -36,9 +43,33 @@ public class ListenActivityResultFragment extends Fragment implements ListenActi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ListenActivityResultRequest.OnActivityResultCallBack callBack = mCallBackMap.get(requestCode);
+        ListenActivityResultRequest.OnActivityResultCallBack callBack = activityResultCallbackMap.get(requestCode);
         if (callBack != null) {
             callBack.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (onLifecycleCallback != null) {
+            onLifecycleCallback.onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (onLifecycleCallback != null) {
+            onLifecycleCallback.onPause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (onLifecycleCallback != null) {
+            onLifecycleCallback.onDestroy();
         }
     }
 

@@ -41,6 +41,9 @@ public class PermissionUtil {
             Log.d(TAG, "start requestPermission,permissions:" + Arrays.toString(permissions));
             mListenActivityResultRequest.requestPermissionForResult(permissions, 0, (requestCode, _permissions, grantResults) -> {
                 Log.d(TAG, "requestPermissionForResult,permissions:" + Arrays.toString(_permissions) + " grantResults:" + Arrays.toString(grantResults));
+                if (mListener == null) {
+                    return;
+                }
                 // If request is cancelled, the result arrays are empty.
                 if (_permissions.length > 0) {
                     int allGrantResult = PackageManager.PERMISSION_GRANTED;

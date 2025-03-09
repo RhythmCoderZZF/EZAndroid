@@ -47,14 +47,15 @@
     <!--    android:maxSdkVersion="32" />-->
     <!--[Media]-->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
 
     <!--[Sensor]-->
     <uses-permission android:name="android.permission.VIBRATE" />
+
     <!--[Camera]-->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
     <application
         android:name=".App"
         android:allowBackup="true"
