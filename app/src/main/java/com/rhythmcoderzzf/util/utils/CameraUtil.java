@@ -1,10 +1,12 @@
 package com.rhythmcoderzzf.util.utils;
 
+import static com.rhythmcoderzzf.util.utils.camera.Utils.getPreviewOutputSize;
 import static com.rhythmcoderzzf.util.utils.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -12,24 +14,26 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.TextureView;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.rhythmcoderzzf.util.utils.camera.AutoFitSurfaceView;
 import com.rhythmcoderzzf.util.utils.core.ListenActivityResultRequest;
 
 import java.util.Arrays;
 
-public class CameraUtil {
+public class CameraUtil<T extends View> {
     private static final String TAG = CameraUtil.class.getSimpleName();
     private static String HOLDER_TAG = "camera_holder";
     private Context mContext;
@@ -40,16 +44,16 @@ public class CameraUtil {
     //****************************Camera2预览***************************
     private CameraManager cameraManager;
     private CameraDevice mCameraDevice;
-    private TextureView mTextureView;
+    private CameraCharacteristics characteristics;
+    private static String mCameraId = "1";
+    private T mTextureView;
+    private Size previewSize;
     private CameraCaptureSession mCameraCaptureSession;
-    private static String mCameraID;
     private Handler mCameraHandler;
 
     public CameraUtil(AppCompatActivity context) {
         mContext = context;
-        cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         mListenActivityResultRequest = holderFragmentFor(HOLDER_TAG, context);
-        mListenActivityResultRequest.registerLifecycleListener(onFragmentLifecycleCallback);
     }
 
     /**
@@ -86,63 +90,21 @@ public class CameraUtil {
     public interface CameraIntentCallback {
         void onIntentCallback(Intent intent);
     }
-
     //*******************************Camera2 API********************************
-    public void setTextureView(TextureView textureView) {
-        mTextureView = textureView;
-        textureView.setSurfaceTextureListener(new PreviewSurfaceTextureListener());
-    }
-
-    public Size getOptimalSize(CameraCharacteristics characteristics, int maxWidth, int maxHeight) {
-        return getOptimalSize(characteristics, SurfaceTexture.class, maxWidth, maxHeight);
-    }
 
     /**
-     * 判断相机的 Hardware Level 是否大于等于指定的 Level。
-     */
-   /* private static void getFrontAndBackCameras(CameraManager cameraManager) {
-        try {
-            String[] cameraIdList = cameraManager.getCameraIdList();
-            Log.d(TAG, "get cameraIdList:" + Arrays.toString(cameraIdList));
-            for (String cameraId : cameraIdList) {
-                CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraId);
-                // Check if the camera supports the required hardware level
-                if (isHardwareLevelSupported(cameraCharacteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL)) {
-                    // Check if the camera is front-facing or back-facing
-                    Integer lensFacing = cameraCharacteristics.get(CameraCharacteristics.LENS_FACING);
-                    mCameraID = cameraId;
-                    mCameraCharacteristics = cameraCharacteristics;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
-
-    /**
-     * 要求相机的 Hardware Level 必须是 FULL 及以上，才能支持Camera2 API
+     * 开启预览
      *
-     * @param characteristics 相机信息的提供者
-     * @param requiredLevel   Hardware Level
-     * @return
+     * @param textureView SurfaceView、TextureView
      */
-    /*private static boolean isHardwareLevelSupported(CameraCharacteristics characteristics, int requiredLevel) {
-        int[] sortedLevels = new int[]{CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LIMITED, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_3};
-
-        Integer deviceLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
-        if (requiredLevel == deviceLevel) {
-            return true;
+    public void startPreview(T textureView) {
+        mTextureView = textureView;
+        if (textureView instanceof TextureView) {
+            ((TextureView) textureView).setSurfaceTextureListener(new PreviewSurfaceTextureListener());
+        } else if (textureView instanceof SurfaceView) {
+            ((SurfaceView) textureView).getHolder().addCallback(new PreviewSurfaceHolderListener());
         }
-
-        for (int sortedLevel : sortedLevels) {
-            if (requiredLevel == sortedLevel) {
-                return true;
-            } else if (deviceLevel == sortedLevel) {
-                return false;
-            }
-        }
-        return false;
-    }*/
+    }
 
     private class CameraStateCallback extends CameraDevice.StateCallback {
 
@@ -172,89 +134,95 @@ public class CameraUtil {
         @Override
         public void onResume() {
             super.onResume();
+            if (mCameraDevice != null) {
+                openCamera();
+            }
         }
 
         @Override
-        public void onPause() {
-            super.onPause();
-            //if (onFragmentLifecycleCallback != null) closeCamera();
+        public void onStop() {
+            super.onStop();
+            try {
+                if (mCameraDevice != null) mCameraDevice.close();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
         }
 
         @Override
         public void onDestroy() {
             super.onDestroy();
-            cancelCamera();
+            releaseCamera();
         }
     };
+
+    private class PreviewSurfaceHolderListener implements SurfaceHolder.Callback {
+        @Override
+        public void surfaceCreated(@NonNull SurfaceHolder holder) {
+            initCamera();
+            if (mTextureView instanceof AutoFitSurfaceView) {
+                Size previewSize = getPreviewOutputSize(mTextureView.getDisplay(), characteristics, SurfaceHolder.class, ImageFormat.JPEG);
+                ((AutoFitSurfaceView) mTextureView).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
+            }
+            openCamera();
+        }
+
+        @Override
+        public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+        }
+
+        @Override
+        public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+        }
+    }
 
     private class PreviewSurfaceTextureListener implements TextureView.SurfaceTextureListener {
         @Override
         public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
-            Log.d(TAG, "onSurfaceTextureAvailable: ");
+            initCamera();
             openCamera();
         }
 
         @Override
         public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
-            Log.d(TAG, "onSurfaceTextureSizeChanged: ");
         }
 
         @Override
         public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
-            Log.d(TAG, "onSurfaceTextureDestroyed: ");
             return false;
         }
 
         @Override
         public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
-            Log.d(TAG, "onSurfaceTextureUpdated: ");
         }
     }
 
-    /**
-     * 根据我们的实际要求，获取相机支持的最适合的预览尺寸
-     *
-     * @param cameraCharacteristics
-     * @param clazz                 ImageReader：常用来拍照或接收 YUV 数据。
-     *                              MediaRecorder：常用来录制视频。
-     *                              MediaCodec：常用来录制视频。
-     *                              SurfaceHolder：常用来显示预览画面。
-     *                              SurfaceTexture：常用来显示预览画面。
-     * @param maxWidth
-     * @param maxHeight
-     * @return
-     */
-    private Size getOptimalSize(CameraCharacteristics cameraCharacteristics, Class<?> clazz, int maxWidth, int maxHeight) {
-        float aspectRatio = (float) maxWidth / maxHeight;
-        StreamConfigurationMap streamConfigurationMap = cameraCharacteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-        if (streamConfigurationMap != null) {
-            Size[] supportedSizes = streamConfigurationMap.getOutputSizes(clazz);
-            if (supportedSizes != null) {
-                for (Size size : supportedSizes) {
-                    if ((float) size.getWidth() / size.getHeight() == aspectRatio && size.getHeight() <= maxHeight && size.getWidth() <= maxWidth) {
-                        return size;
-                    }
-                }
-            }
+    private void initCamera() {
+        cameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
+        mListenActivityResultRequest.registerLifecycleListener(onFragmentLifecycleCallback);
+        HandlerThread handlerThread = new HandlerThread("CameraHandler");
+        handlerThread.start();
+        mCameraHandler = new Handler(handlerThread.getLooper());
+        try {
+            characteristics = cameraManager.getCameraCharacteristics(mCameraId);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
         }
-        return null;
     }
 
     /**
      * TextureView的surface初始化完毕，开始openCamera流程
      */
-    public void openCamera() {
-        HandlerThread handlerThread = new HandlerThread("CameraHandler");
-        handlerThread.start();
-        mCameraHandler = new Handler(handlerThread.getLooper());
-        mCameraID = String.valueOf(CameraCharacteristics.LENS_FACING_FRONT);
+    private void openCamera() {
         try {
             if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             //打开摄像头
-            cameraManager.openCamera(mCameraID, new CameraStateCallback(), mCameraHandler);
-        } catch (CameraAccessException e) {
+            cameraManager.openCamera(mCameraId, new CameraStateCallback(), mCameraHandler);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -263,20 +231,17 @@ public class CameraUtil {
      * 开始预览
      */
     private void takePreview() {
+        Surface surface = getSurfaceByPreviewView();
         try {
-            final CaptureRequest.Builder previewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-            // 将SurfaceView的surface作为CaptureRequest.Builder的目标
-            previewRequestBuilder.addTarget(new Surface(mTextureView.getSurfaceTexture()));
-            // 自动对焦
-            previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            // 创建CameraCaptureSession，该对象负责管理处理预览请求和拍照请求
-            mCameraDevice.createCaptureSession(Arrays.asList(new Surface(mTextureView.getSurfaceTexture())), new CameraCaptureSession.StateCallback() {
+            mCameraDevice.createCaptureSession(Arrays.asList(surface), new CameraCaptureSession.StateCallback() {
                 @Override
-                public void onConfigured(CameraCaptureSession cameraCaptureSession) {
-                    // 当摄像头已经准备好时，开始显示预览
+                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
                     mCameraCaptureSession = cameraCaptureSession;
                     try {
-                        // 创建预览需要的CaptureRequest.Builder
+                        final CaptureRequest.Builder previewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                        previewRequestBuilder.addTarget(surface);
+                        // 自动对焦
+                        previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                         // 打开闪光灯
                         //previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
                         // 显示预览
@@ -301,7 +266,7 @@ public class CameraUtil {
         }
     }
 
-    public void cancelCamera() {
+    public void releaseCamera() {
         if (null != mCameraCaptureSession) {
             mCameraCaptureSession.close();
             mCameraCaptureSession = null;
@@ -314,14 +279,22 @@ public class CameraUtil {
             mImageReader.close();
             mImageReader = null;
         }*/
-        stopBackgroundThread(); // 对应 openCamera() 方法中的 startBackgroundThread()
-    }
-
-    private void stopBackgroundThread() {
         if (mCameraHandler != null) {
             mCameraHandler.getLooper().quit();
             mCameraHandler = null;
-            mCameraHandler = null;
         }
+    }
+
+    private Surface getSurfaceByPreviewView() {
+        if (mTextureView instanceof TextureView) {
+            if (previewSize != null) {
+                SurfaceTexture surfaceTexture = ((TextureView) mTextureView).getSurfaceTexture();
+                surfaceTexture.setDefaultBufferSize(previewSize.getWidth(), previewSize.getHeight());
+                return new Surface((surfaceTexture));
+            }
+        } else if (mTextureView instanceof SurfaceView) {
+            return ((SurfaceView) mTextureView).getHolder().getSurface();
+        }
+        return null;
     }
 }

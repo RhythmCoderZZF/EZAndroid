@@ -1,8 +1,10 @@
 package com.rhythmcoder.androidstudysystem.camera;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Surface;
+import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 
@@ -17,9 +19,9 @@ import com.rhythmcoderzzf.util.utils.PermissionUtil;
  */
 public class Camera2APIActivity extends BaseActivity implements View.OnClickListener {
     private CameraUtil cameraUtil;
-    private TextureView cameraPreview;
-    private Surface previewSurface;
+    private SurfaceView cameraPreview;
 
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,8 @@ public class Camera2APIActivity extends BaseActivity implements View.OnClickList
 
         cameraPreview = findViewById(R.id.camera_preview);
         cameraUtil = new CameraUtil(this);
-        cameraUtil.setTextureView(cameraPreview);
+        cameraUtil.startPreview(cameraPreview);
+
     }
 
     @Override

@@ -22,6 +22,7 @@ public interface ListenActivityResultRequest {
     public static class OnLifecycleCallback {
         public void onResume(){}
         public void onPause(){}
+        public void onStop(){}
         public void onDestroy(){}
     }
 }
