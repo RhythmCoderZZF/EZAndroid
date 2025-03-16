@@ -1,6 +1,6 @@
-package com.rhythmcoderzzf.util.utils;
+package com.rhythmcoderzzf.ez.utils;
 
-import static com.rhythmcoderzzf.util.utils.core.ListenActivityResultFragment.holderFragmentFor;
+import static com.rhythmcoderzzf.ez.utils.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -9,19 +9,19 @@ import android.util.Log;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.rhythmcoderzzf.util.utils.core.ListenActivityResultRequest;
+import com.rhythmcoderzzf.ez.utils.core.ListenActivityResultRequest;
 
 import java.util.Arrays;
 
-public class PermissionUtil {
-    private final String TAG = PermissionUtil.class.getSimpleName();
+public class EZPermissionUtil {
+    private final String TAG = EZPermissionUtil.class.getSimpleName();
     private static String HOLDER_TAG = "permission_holder";
     private final Activity context;
     private OnPermissionListener mListener;
 
     private ListenActivityResultRequest mListenActivityResultRequest;
 
-    public PermissionUtil(FragmentActivity context) {
+    public EZPermissionUtil(FragmentActivity context) {
         this.context = context;
         mListenActivityResultRequest = holderFragmentFor(HOLDER_TAG, context);
     }

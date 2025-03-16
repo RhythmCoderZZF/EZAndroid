@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.util.utils.core;
+package com.rhythmcoderzzf.ez.utils.core;
 
 import android.content.Intent;
 import android.util.SparseArray;

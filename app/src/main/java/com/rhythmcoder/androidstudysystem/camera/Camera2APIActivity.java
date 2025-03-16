@@ -3,22 +3,20 @@ package com.rhythmcoder.androidstudysystem.camera;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.Surface;
 import android.view.SurfaceView;
-import android.view.TextureView;
 import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.util.utils.CameraUtil;
-import com.rhythmcoderzzf.util.utils.PermissionUtil;
+import com.rhythmcoderzzf.ez.utils.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ez.utils.EZPermissionUtil;
 
 /**
  * <a href="https://developer.android.google.cn/media/camera/camera-intents?hl=zh-cn">相机 intent</a>
  * 如果您要使用设备的默认相机应用执行拍照或录制视频等基本相机操作，则无需与相机库集成，请改用 Intent。
  */
 public class Camera2APIActivity extends BaseActivity implements View.OnClickListener {
-    private CameraUtil cameraUtil;
+    private EZCameraUtil cameraUtil;
     private SurfaceView cameraPreview;
 
     @SuppressLint("WrongViewCast")
@@ -26,14 +24,14 @@ public class Camera2APIActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_camera_camera2_api);
-        new PermissionUtil(this).requestPermission(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, granted -> {
+        new EZPermissionUtil(this).requestPermission(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, granted -> {
             if (!granted) {
                 finish();
             }
         });
 
         cameraPreview = findViewById(R.id.camera_preview);
-        cameraUtil = new CameraUtil(this);
+        cameraUtil = new EZCameraUtil(this);
         cameraUtil.startPreview(cameraPreview);
 
     }

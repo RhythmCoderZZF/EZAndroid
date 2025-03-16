@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
-import com.rhythmcoderzzf.util.utils.CameraUtil;
+import com.rhythmcoderzzf.ez.utils.camera.EZCameraUtil;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.util.utils.PermissionUtil;
+import com.rhythmcoderzzf.ez.utils.EZPermissionUtil;
 
 /**
  * <a href="https://developer.android.google.cn/media/camera/camera-intents?hl=zh-cn">相机 intent</a>
@@ -15,7 +15,7 @@ import com.rhythmcoderzzf.util.utils.PermissionUtil;
  */
 public class CameraIntentActivity extends BaseActivity implements View.OnClickListener {
 
-    private CameraUtil cameraUtil;
+    private EZCameraUtil cameraUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,10 +23,10 @@ public class CameraIntentActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_media_camera_intent);
         findViewById(R.id.btn_lunch_camera).setOnClickListener(this);
         findViewById(R.id.btn_lunch_video).setOnClickListener(this);
-        new PermissionUtil(this).requestPermission(new String[]{Manifest.permission.CAMERA}, granted -> {
+        new EZPermissionUtil(this).requestPermission(new String[]{Manifest.permission.CAMERA}, granted -> {
 
         });
-        cameraUtil = new CameraUtil(this);
+        cameraUtil = new EZCameraUtil(this);
     }
 
     @Override

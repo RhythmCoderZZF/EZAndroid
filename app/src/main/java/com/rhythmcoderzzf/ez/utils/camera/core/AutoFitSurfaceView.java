@@ -1,13 +1,14 @@
-package com.rhythmcoderzzf.util.utils.camera;
+package com.rhythmcoderzzf.ez.utils.camera.core;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
 
-public class AutoFitSurfaceView extends SurfaceView {
+import com.rhythmcoderzzf.ez.utils.camera.EZCameraUtil;
 
-    private static final String TAG = AutoFitSurfaceView.class.getSimpleName();
+public class AutoFitSurfaceView extends SurfaceView {
+    private static final String TAG = EZCameraUtil.TAG + AutoFitSurfaceView.class.getSimpleName();
     private float aspectRatio = 0f;
 
 
@@ -35,6 +36,7 @@ public class AutoFitSurfaceView extends SurfaceView {
             throw new IllegalArgumentException("Size cannot be negative");
         }
         aspectRatio = (float) width / (float) height;
+        //如果布局尺寸 < setFixedSize尺寸（Surface尺寸），内容会被裁剪；如果布局尺寸 > Surface尺寸，内容会留黑边
         getHolder().setFixedSize(width, height);
         requestLayout();
     }
@@ -60,8 +62,7 @@ public class AutoFitSurfaceView extends SurfaceView {
                 newWidth = width;
                 newHeight = (int) (width / actualRatio);
             }
-
-            Log.d(TAG, "Measured dimensions set: " + newWidth + " x " + newHeight);
+            Log.d(TAG, "new Measured dimensions set: " + newWidth + " x " + newHeight);
             setMeasuredDimension(newWidth, newHeight);
         }
     }
