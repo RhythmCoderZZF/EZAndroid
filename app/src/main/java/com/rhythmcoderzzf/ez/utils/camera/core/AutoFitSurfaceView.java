@@ -47,6 +47,7 @@ public class AutoFitSurfaceView extends SurfaceView {
 
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
+        Log.d(TAG, "origin onMeasure: " + width + " x " + height);
 
         if (aspectRatio == 0f) {
             setMeasuredDimension(width, height);
@@ -62,7 +63,7 @@ public class AutoFitSurfaceView extends SurfaceView {
                 newWidth = width;
                 newHeight = (int) (width / actualRatio);
             }
-            Log.d(TAG, "new Measured dimensions set: " + newWidth + " x " + newHeight);
+            Log.d(TAG, "new Measured dimensions aspectRatio:" + aspectRatio + " set:" + newWidth + " x " + newHeight);
             setMeasuredDimension(newWidth, newHeight);
         }
     }

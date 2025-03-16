@@ -15,10 +15,6 @@ import java.util.function.ToIntFunction;
 
 public class Utils {
     public static final String TAG = EZCameraUtil.TAG + Utils.class.getSimpleName();
-
-    // Standard High Definition size for pictures and video (1080P)
-    public static final SmartSize SIZE_1080P = new SmartSize(1920, 1080);
-
     /**
      * Returns a [SmartSize] object for the given [Display]
      *
@@ -34,17 +30,13 @@ public class Utils {
     /**
      * 根据屏幕尺寸和1080P限制，从相机支持的输出尺寸中选择最大的合适预览尺寸。
      *
-     * @param display         The display where the preview size will be shown.
      * @param characteristics CameraCharacteristics object to get the camera configuration.
      * @param targetClass     The class of the target (e.g., SurfaceTexture.class).
      * @param format          The image format (optional).
      * @return The largest available preview size.
      */
-    public static <T> Size getPreviewOutputSize(Display display, CameraCharacteristics characteristics, Class<T> targetClass, Integer format) {
-        // Find which is smaller: screen or 1080p
-        SmartSize screenSize = getDisplaySmartSize(display);
-        boolean hdScreen = screenSize.getLong() >= SIZE_1080P.getLong() || screenSize.getShort() >= SIZE_1080P.getShort();
-        SmartSize maxSize = hdScreen ? SIZE_1080P : screenSize;
+    public static <T> Size getPreviewOutputSize(Size maxSize, CameraCharacteristics characteristics, Class<T> targetClass, Integer format) {
+        SmartSize limitSize = new SmartSize(maxSize.getWidth(), maxSize.getHeight());
         // Get the camera configuration
         StreamConfigurationMap config = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
         // Get all available sizes based on the format or target class
@@ -56,10 +48,17 @@ public class Utils {
         }
         Log.d(TAG, "get preview Output Size,allSizes:" + Arrays.toString(allSizes));
         // Sort the sizes by area from largest to smallest
-        SmartSize[] validSizes = Arrays.stream(allSizes).map(size -> new SmartSize(size.getHeight(), size.getWidth())).sorted(Comparator.comparingInt(size -> size.getSize().getHeight() * size.getSize().getWidth())).toArray(SmartSize[]::new);
+        //SmartSize[] validSizes = Arrays.stream(allSizes).map(size -> new SmartSize(size.getHeight(), size.getWidth())).sorted(Comparator.comparingInt(size -> size.getSize().getHeight() * size.getSize().getWidth())).toArray(SmartSize[]::new);
+        SmartSize[] validSizes = Arrays.stream(allSizes).map(size -> new SmartSize(size.getWidth(), size.getHeight())).sorted(Comparator.comparingInt(new ToIntFunction<SmartSize>() {
+            @Override
+            public int applyAsInt(SmartSize value) {
+                return value.getSize().getHeight() * value.getSize().getWidth();
+            }
+
+        }).reversed()).toArray(SmartSize[]::new);
         // Find the largest size that is smaller or equal to maxSize
         for (SmartSize validSize : validSizes) {
-            if (validSize.getLong() <= maxSize.getLong() && validSize.getShort() <= maxSize.getShort()) {
+            if (validSize.getLong() <= limitSize.getLong() && validSize.getShort() <= limitSize.getShort()) {
                 Log.d(TAG, "Find the largest size that is smaller or equal to maxSize,size:" + validSize.getSize());
                 return validSize.getSize();
             }

@@ -2,19 +2,24 @@ package com.rhythmcoderzzf.ez.utils.camera;
 
 import static com.rhythmcoderzzf.ez.utils.core.ListenActivityResultFragment.holderFragmentFor;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.params.MeteringRectangle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -146,7 +151,9 @@ public class EZCameraUtil<T extends View> {
         public void surfaceCreated(@NonNull SurfaceHolder holder) {
             openCamera();
             if (mPreviewView instanceof AutoFitSurfaceView) {
-                Size previewSize = Utils.getPreviewOutputSize(mPreviewView.getDisplay(), characteristics, SurfaceHolder.class, null);
+                Size size = new Size(mPreviewView.getWidth(), mPreviewView.getHeight());
+                Log.d(TAG, "surfaceCreated: size:" + size);
+                Size previewSize = Utils.getPreviewOutputSize(size, characteristics, SurfaceHolder.class, null);
                 ((AutoFitSurfaceView) mPreviewView).setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
             }
         }
@@ -181,21 +188,108 @@ public class EZCameraUtil<T extends View> {
     }
 
     private void openCamera() {
-        cameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
-        mListenActivityResultRequest.registerLifecycleListener(onFragmentLifecycleCallback);
-        HandlerThread handlerThread = new HandlerThread("CameraHandler");
-        handlerThread.start();
-        mCameraHandler = new Handler(handlerThread.getLooper());
-        try {
-            characteristics = cameraManager.getCameraCharacteristics(mCameraId);
-            if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                return;
+        if (ActivityCompat.checkSelfPermission(mContext, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        if (cameraManager == null) {
+            initModule();
+            cameraManager = (CameraManager) mContext.getSystemService(Context.CAMERA_SERVICE);
+            mListenActivityResultRequest.registerLifecycleListener(onFragmentLifecycleCallback);
+            HandlerThread handlerThread = new HandlerThread("CameraHandler");
+            handlerThread.start();
+            mCameraHandler = new Handler(handlerThread.getLooper());
+            try {
+                characteristics = cameraManager.getCameraCharacteristics(mCameraId);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
             }
+        }
+        try {
             //打开摄像头
             cameraManager.openCamera(mCameraId, new CameraStateCallback(), mCameraHandler);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initModule() {
+       /* mPreviewView.setOnTouchListener((v, event) -> {
+            int actionMasked = MotionEventCompat.getActionMasked(event);
+            int fingerX, fingerY;
+            int length = (int) (mContext.getResources().getDisplayMetrics().density * 80);
+            switch (actionMasked) {
+                case MotionEvent.ACTION_DOWN:
+                    fingerX = (int) event.getX();
+                    fingerY = (int) event.getY();
+                    Log.d(TAG, "onTouch: x->" + fingerX + ",y->" + fingerY);
+                    *//*mIvFocus.setX(fingerX - length / 2);
+                    mIvFocus.setY(fingerY - length / 2);
+                    mIvFocus.setVisibility(View.VISIBLE);*//*
+                    triggerFocusArea(fingerX, fingerY);
+                    break;
+            }
+
+            return false;
+        });*/
+
+        mPreviewView.setOnTouchListener((v, event) -> {
+            DisplayMetrics metrics = new DisplayMetrics();
+            mPreviewView.getDisplay().getMetrics(metrics);
+            Log.d(TAG, "init: 屏幕分辨率 metrics : " + metrics.widthPixels + " " + metrics.heightPixels);
+
+            int screenW = metrics.widthPixels;//屏幕宽度
+            int screenH = metrics.widthPixels;//屏幕宽度
+
+            int realPreviewWidth = 4000;
+            int realPreviewHeight = 3000;
+
+            float focusX = (float) realPreviewWidth / screenW * event.getX();
+            float focusY = (float) realPreviewHeight / screenH * (event.getX() + 112 * 2.54f);
+
+            try {
+                CaptureRequest.Builder captureRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+
+                Rect cropRegion = captureRequestBuilder.get(CaptureRequest.SCALER_CROP_REGION);
+                Log.d(TAG, "init: cropRegion.height() " + cropRegion.height());
+                float cutDx = (cropRegion.height() - 1440) / 2.0f;
+
+                Log.d(TAG, "init: realPreviewWidth" + realPreviewWidth + " " + realPreviewHeight);
+
+                float x1 = event.getX();
+                float y1 = event.getY() + 112 * 2.54f;
+                Rect rect1 = new Rect();
+                rect1.left = (int) (focusX);
+                rect1.top = (int) (focusY + cutDx);
+                rect1.right = (int) (focusX + 50);
+                rect1.bottom = (int) (focusY + cutDx + 50);
+                Log.d(TAG, "init: rect1 : " + rect1.left + " " + rect1.right + " " + rect1.top + " " + rect1.bottom);
+
+
+                CaptureRequest.Builder builder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                rect1 = getFocusRect((int)x1,(int)event.getY(),builder);
+                builder.addTarget(getSurfaceByPreviewView());
+                builder.set(CaptureRequest.CONTROL_AF_REGIONS, new MeteringRectangle[]{new MeteringRectangle(rect1, 1000)});
+                builder.set(CaptureRequest.CONTROL_AE_REGIONS, new MeteringRectangle[]{new MeteringRectangle(rect1, 1000)});
+                builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_AUTO);
+                builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_START);
+                builder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CameraMetadata.CONTROL_AE_PRECAPTURE_TRIGGER_START);
+                mCameraCaptureSession.setRepeatingRequest(builder.build(), null, mCameraHandler);
+
+                /*builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CameraMetadata.CONTROL_AF_TRIGGER_CANCEL);
+                mCameraCaptureSession.capture(builder.build(), null, mCameraHandler);*/
+
+                /*if (!rect1.isEmpty()) {
+                    //focusView.setVisibility(View.VISIBLE);
+
+                    Log.d(TAG, "init: x1--y1 " + x1 + " " + y1);
+                    focusView.setTouchFocusRect(rect1, x1, y1);
+                }*/
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
+            }
+            return false;
+        });
     }
 
     /**
@@ -211,10 +305,11 @@ public class EZCameraUtil<T extends View> {
                     try {
                         final CaptureRequest.Builder previewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
                         previewRequestBuilder.addTarget(surface);
-                        /*// 自动对焦
-                        previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                        // 自动对焦
+                        previewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
                         // 打开闪光灯
-                        previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);*/
+                        //previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+                        //previewRequestBuilder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_CANCEL);
                         // 显示预览
                         mCameraCaptureSession.setRepeatingRequest(previewRequestBuilder.build(), null, mCameraHandler);
                     } catch (CameraAccessException e) {
@@ -254,5 +349,40 @@ public class EZCameraUtil<T extends View> {
             return ((SurfaceView) mPreviewView).getHolder().getSurface();
         }
         return null;
+    }
+
+    private Rect getFocusRect(int x, int y,CaptureRequest.Builder builder) {
+        // 获取屏幕尺寸（假设工具类已实现）
+        int screenW = mPreviewView.getDisplay().getWidth();
+        int screenH = mPreviewView.getDisplay().getHeight();
+
+        // 交换宽高处理竖屏模式
+        int realPreviewWidth = mPreviewView.getHeight();
+        int realPreviewHeight = mPreviewView.getWidth();
+
+        // 计算坐标映射关系
+        float focusX = (realPreviewWidth / (float) screenW) * x;
+        float focusY = (realPreviewHeight / (float) screenH) * y;
+        Log.d(TAG, "focusX=" + focusX + ",focusY=" + focusY);
+
+        // 获取相机传感器全尺寸区域
+        Rect totalPicSize = builder.get(CaptureRequest.SCALER_CROP_REGION);
+        Log.d(TAG, "camera pic area size=" + totalPicSize);
+
+        // 计算裁剪偏移量（需处理可能的除零问题）
+        int cutDx = (totalPicSize.height() - mPreviewView.getHeight()) / 2;
+        Log.d(TAG, "cutDx=" + cutDx);
+
+        // 转换dp为px（10dp的焦点框尺寸）
+        int width = 20;
+        int height = 20;
+
+        // 构造最终矩形（注意坐标系转换）
+        return new Rect(
+                (int) focusY,                   // left
+                (int) focusX + cutDx,           // top
+                (int) (focusY + height),        // right
+                (int) (focusX + cutDx + width)  // bottom
+        );
     }
 }
