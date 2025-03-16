@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.ez.utils.camera.core;
+package com.rhythmcoderzzf.ez.utils.camera.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

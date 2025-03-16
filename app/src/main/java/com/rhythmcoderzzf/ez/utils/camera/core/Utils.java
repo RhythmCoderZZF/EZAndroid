@@ -15,17 +15,6 @@ import java.util.function.ToIntFunction;
 
 public class Utils {
     public static final String TAG = EZCameraUtil.TAG + Utils.class.getSimpleName();
-    /**
-     * Returns a [SmartSize] object for the given [Display]
-     *
-     * @param display The display for which we want to calculate the size.
-     * @return SmartSize object containing the size of the display.
-     */
-    public static SmartSize getDisplaySmartSize(Display display) {
-        Point outPoint = new Point();
-        display.getRealSize(outPoint);
-        return new SmartSize(outPoint.x, outPoint.y);
-    }
 
     /**
      * 根据屏幕尺寸和1080P限制，从相机支持的输出尺寸中选择最大的合适预览尺寸。
