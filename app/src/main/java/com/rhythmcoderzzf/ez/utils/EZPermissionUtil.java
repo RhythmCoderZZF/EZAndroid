@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -26,7 +27,7 @@ public class EZPermissionUtil {
         mListenActivityResultRequest = holderFragmentFor(HOLDER_TAG, context);
     }
 
-    public void requestPermission(String[] permissions, OnPermissionListener listener) {
+    public void requestPermission(String[] permissions, @NonNull OnPermissionListener listener) {
         mListener = listener;
         int permissionGrantedCount = 0;
         for (String permission : permissions) {
@@ -67,7 +68,8 @@ public class EZPermissionUtil {
                     }
                 }*/
             });
-
+        } else {
+            mListener.onPermissionGranted(true);
         }
     }
 
