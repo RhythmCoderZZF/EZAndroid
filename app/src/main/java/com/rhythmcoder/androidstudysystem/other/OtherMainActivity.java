@@ -3,6 +3,7 @@ package com.rhythmcoder.androidstudysystem.other;
 import android.os.Bundle;
 
 import com.rhythmcoder.androidstudysystem.R;
+import com.rhythmcoder.androidstudysystem.other.phone.PhoneMainActivity;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.ListAdapter;
 import com.rhythmcoder.baselib.TitleBean;
@@ -15,6 +16,7 @@ public class OtherMainActivity extends BaseActivity {
 
     private List<TitleBean> initRvDataList() {
         mList.add(new TitleBean("Info", "设备信息", "", ADBShellActivity.class));
+        mList.add(new TitleBean("电话", "电话相关", "", PhoneMainActivity.class));
         return mList;
     }
 

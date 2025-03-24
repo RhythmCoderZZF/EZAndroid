@@ -56,6 +56,10 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
+
+    <!--[Phone]-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -161,6 +165,7 @@
         <!--[Camera]-->
         <activity android:name="com.rhythmcoder.androidstudysystem.camera.CameraMainActivity" />
         <activity android:name="com.rhythmcoder.androidstudysystem.camera.Camera2APIActivity" />
+        <activity android:name="com.rhythmcoder.androidstudysystem.other.phone.PhoneMainActivity" />
 
         <service
             android:name=".background.service.BackgroundService"
