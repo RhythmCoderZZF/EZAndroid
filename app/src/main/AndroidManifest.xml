@@ -60,6 +60,7 @@
     <!--[Phone]-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -137,7 +138,9 @@
         </activity>
         <!-- [Storage] -->
         <activity android:name=".storage.StorageMainActivity" />
-        <activity android:name=".storage.all.StorageAppSpecificActivity" /> <!-- [Background Work] -->
+        <activity android:name=".storage.all.StorageAppSpecificActivity" />
+        <activity android:name=".storage.SharedPreferenceActivity" />
+        <!-- [Background Work] -->
         <activity android:name=".background.BackgroundWorkMainActivity" />
         <activity android:name=".background.alarm.BackgroundAlarmActivity" />
         <activity android:name=".background.service.BackgroundServiceActivity" />
@@ -150,22 +153,22 @@
         <!-- [Media] -->
         <activity android:name=".media.MediaMainActivity" />
         <activity android:name=".media.MediaProjectionRecordActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.camera.CameraIntentActivity" />
+        <activity android:name=".camera.CameraIntentActivity" />
         <!-- [Other] -->
         <activity android:name=".other.ADBShellActivity" />
         <activity android:name=".other.OtherMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.ui.UIMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.ui.paint.UIPaintActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.sensor.SensorMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.sensor.SensorBaseActivity" />
+        <activity android:name=".ui.UIMainActivity" />
+        <activity android:name=".ui.paint.UIPaintActivity" />
+        <activity android:name=".sensor.SensorMainActivity" />
+        <activity android:name=".sensor.SensorBaseActivity" />
         <!-- [UI-Views] -->
-        <activity android:name="com.rhythmcoder.androidstudysystem.ui_views.UIViewsMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.ui_views.notification.UIViewsNotificationActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.sensor.vibrator.VibratorActivity" />
+        <activity android:name=".ui_views.UIViewsMainActivity" />
+        <activity android:name=".ui_views.notification.UIViewsNotificationActivity" />
+        <activity android:name=".sensor.vibrator.VibratorActivity" />
         <!--[Camera]-->
-        <activity android:name="com.rhythmcoder.androidstudysystem.camera.CameraMainActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.camera.Camera2APIActivity" />
-        <activity android:name="com.rhythmcoder.androidstudysystem.other.phone.PhoneMainActivity" />
+        <activity android:name=".camera.CameraMainActivity" />
+        <activity android:name=".camera.Camera2APIActivity" />
+        <activity android:name=".other.phone.PhoneMainActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

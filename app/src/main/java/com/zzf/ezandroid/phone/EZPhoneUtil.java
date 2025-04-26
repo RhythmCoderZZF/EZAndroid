@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.ez.utils.phone;
+package com.zzf.ezandroid.phone;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

@@ -1,11 +1,11 @@
-package com.rhythmcoderzzf.ez.utils.camera.manager;
+package com.zzf.ezandroid.camera.manager;
 
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.MeteringRectangle;
 import android.util.Log;
 
-import com.rhythmcoderzzf.ez.utils.camera.EZCameraUtil;
+import com.zzf.ezandroid.camera.EZCameraUtil;
 
 public class RequestManager {
     private static final String TAG = EZCameraUtil.TAG + RequestManager.class.getSimpleName();

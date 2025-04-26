@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.rhythmcoderzzf.ez.utils.camera.widget.AutoFitSurfaceView
+    <com.zzf.ezandroid.camera.widget.AutoFitSurfaceView
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

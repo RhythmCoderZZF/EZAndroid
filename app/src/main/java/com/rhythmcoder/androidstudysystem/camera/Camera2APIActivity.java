@@ -9,8 +9,8 @@ import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ez.utils.camera.EZCameraUtil;
-import com.rhythmcoderzzf.ez.utils.EZPermissionUtil;
+import com.zzf.ezandroid.camera.EZCameraUtil;
+import com.zzf.ezandroid.EZPermissionUtil;
 
 public class Camera2APIActivity extends BaseActivity {
     private EZCameraUtil cameraUtil;

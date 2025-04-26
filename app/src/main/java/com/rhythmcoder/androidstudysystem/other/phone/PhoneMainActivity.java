@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ez.utils.EZPermissionUtil;
-import com.rhythmcoderzzf.ez.utils.phone.EZPhoneUtil;
+import com.zzf.ezandroid.EZPermissionUtil;
+import com.zzf.ezandroid.phone.EZPhoneUtil;
 
 public class PhoneMainActivity extends BaseActivity {
     private EZPhoneUtil mPhoneUtil;

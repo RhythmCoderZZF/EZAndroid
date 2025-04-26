@@ -1,6 +1,6 @@
-package com.rhythmcoderzzf.ez.utils;
+package com.zzf.ezandroid;
 
-import static com.rhythmcoderzzf.ez.utils.core.ListenActivityResultFragment.holderFragmentFor;
+import static com.zzf.ezandroid.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.rhythmcoderzzf.ez.utils.core.ListenActivityResultRequest;
+import com.zzf.ezandroid.core.ListenActivityResultRequest;
 
 import java.util.Arrays;
 

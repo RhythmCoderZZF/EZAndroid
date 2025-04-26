@@ -16,6 +16,7 @@ public class StorageMainActivity extends BaseActivity {
 
     private List<TitleBean> initRvDataList() {
         mList.add(new TitleBean(getString(R.string.storage_app_specific_files), getString(R.string.storage_app_specific_files_sub_title), getString(R.string.storage_app_specific_files_info), StorageAppSpecificActivity.class));
+        mList.add(new TitleBean("SharedPreference", "", "偏好存储", SharedPreferenceActivity.class));
         return mList;
     }
 

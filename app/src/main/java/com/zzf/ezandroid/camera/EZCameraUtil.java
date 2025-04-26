@@ -1,15 +1,13 @@
-package com.rhythmcoderzzf.ez.utils.camera;
+package com.zzf.ezandroid.camera;
 
-import static com.rhythmcoderzzf.ez.utils.core.ListenActivityResultFragment.holderFragmentFor;
+import static com.zzf.ezandroid.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
@@ -18,7 +16,6 @@ import android.hardware.camera2.params.MeteringRectangle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.provider.MediaStore;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.MotionEvent;
@@ -32,11 +29,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.rhythmcoderzzf.ez.utils.camera.manager.CameraSessionManager;
-import com.rhythmcoderzzf.ez.utils.camera.widget.AutoFitSurfaceView;
-import com.rhythmcoderzzf.ez.utils.camera.manager.FocusManager;
-import com.rhythmcoderzzf.ez.utils.camera.core.Utils;
-import com.rhythmcoderzzf.ez.utils.core.ListenActivityResultRequest;
+import com.zzf.ezandroid.camera.manager.CameraSessionManager;
+import com.zzf.ezandroid.camera.widget.AutoFitSurfaceView;
+import com.zzf.ezandroid.camera.manager.FocusManager;
+import com.zzf.ezandroid.camera.core.Utils;
+import com.zzf.ezandroid.core.ListenActivityResultRequest;
 
 public class EZCameraUtil<T extends View> {
     public static final String TAG = EZCameraUtil.class.getSimpleName() + "_";

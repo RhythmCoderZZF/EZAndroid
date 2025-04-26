@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.ez.utils.misc;
+package com.zzf.ezandroid.misc;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
