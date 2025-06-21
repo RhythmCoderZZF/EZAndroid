@@ -27,3 +27,4 @@ dependencyResolutionManagement {
 rootProject.name = "AndroidStudy_System"
 include(":app")
 include(":baselib")
+include(":ezandroid")
