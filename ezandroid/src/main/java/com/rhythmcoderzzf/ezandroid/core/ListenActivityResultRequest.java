@@ -1,4 +1,4 @@
-package com.zzf.ezandroid.core;
+package com.rhythmcoderzzf.ezandroid.core;
 
 import android.content.Intent;
 

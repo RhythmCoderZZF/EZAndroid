@@ -1,4 +1,4 @@
-package com.zzf.ezandroid.camera.manager;
+package com.rhythmcoderzzf.ezandroid.camera.manager;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -6,8 +6,8 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.params.MeteringRectangle;
 import android.os.Handler;
 
-import com.zzf.ezandroid.camera.EZCameraUtil;
-import com.zzf.ezandroid.camera.core.CoordinateTransformer;
+import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.core.CoordinateTransformer;
 
 public class FocusManager {
     private static final String TAG = EZCameraUtil.TAG + FocusManager.class.getSimpleName();

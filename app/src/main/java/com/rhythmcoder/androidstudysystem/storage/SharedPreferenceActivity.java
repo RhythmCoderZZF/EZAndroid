@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.zzf.ezandroid.database.EZDatabaseUtil;
+import com.rhythmcoderzzf.ezandroid.database.EZDatabaseUtil;
 
 public class SharedPreferenceActivity extends BaseActivity implements View.OnClickListener {
     private EZDatabaseUtil.SharedPreferenceModule ezSharePreference;

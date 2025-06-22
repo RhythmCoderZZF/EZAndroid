@@ -1,4 +1,4 @@
-package com.zzf.ezandroid.database;
+package com.rhythmcoderzzf.ezandroid.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;

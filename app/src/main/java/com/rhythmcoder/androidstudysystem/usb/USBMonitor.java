@@ -25,7 +25,7 @@ class USBMonitor {
     private static final String TAG = "USBMonitor";
     private final WeakReference<Context> mWeakContext;
     private PendingIntent mPermissionIntent = null;
-    private static final String ACTION_USB_PERMISSION = "com.zzf.usb.action.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "com.rhythmcoderzzf.usb.action.USB_PERMISSION";
     private UsbManager mUsbManager;
     private final OnDeviceConnectListener mOnDeviceConnectListener;
 

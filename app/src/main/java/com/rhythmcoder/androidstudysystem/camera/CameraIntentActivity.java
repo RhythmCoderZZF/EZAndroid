@@ -5,9 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
-import com.zzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.zzf.ezandroid.EZPermissionUtil;
+import com.rhythmcoderzzf.ezandroid.EZPermissionUtil;
 
 /**
  * <a href="https://developer.android.google.cn/media/camera/camera-intents?hl=zh-cn">相机 intent</a>

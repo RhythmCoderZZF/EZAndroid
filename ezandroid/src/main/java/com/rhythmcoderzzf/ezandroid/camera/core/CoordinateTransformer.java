@@ -1,4 +1,4 @@
-package com.zzf.ezandroid.camera.core;
+package com.rhythmcoderzzf.ezandroid.camera.core;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;

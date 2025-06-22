@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.zzf.ezandroid.misc.EZShellUtil;
+import com.rhythmcoderzzf.ezandroid.misc.EZShellUtil;
 
 public class ADBShellActivity extends BaseActivity {
     private String mShellWords = "";

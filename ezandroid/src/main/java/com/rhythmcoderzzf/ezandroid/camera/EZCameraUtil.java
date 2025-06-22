@@ -1,6 +1,6 @@
-package com.zzf.ezandroid.camera;
+package com.rhythmcoderzzf.ezandroid.camera;
 
-import static com.zzf.ezandroid.core.ListenActivityResultFragment.holderFragmentFor;
+import static com.rhythmcoderzzf.ezandroid.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -29,11 +29,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
-import com.zzf.ezandroid.camera.manager.CameraSessionManager;
-import com.zzf.ezandroid.camera.widget.AutoFitSurfaceView;
-import com.zzf.ezandroid.camera.manager.FocusManager;
-import com.zzf.ezandroid.camera.core.Utils;
-import com.zzf.ezandroid.core.ListenActivityResultRequest;
+import com.rhythmcoderzzf.ezandroid.camera.manager.CameraSessionManager;
+import com.rhythmcoderzzf.ezandroid.camera.widget.AutoFitSurfaceView;
+import com.rhythmcoderzzf.ezandroid.camera.manager.FocusManager;
+import com.rhythmcoderzzf.ezandroid.camera.core.Utils;
+import com.rhythmcoderzzf.ezandroid.core.ListenActivityResultRequest;
 
 public class EZCameraUtil<T extends View> {
     public static final String TAG = EZCameraUtil.class.getSimpleName() + "_";

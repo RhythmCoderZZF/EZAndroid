@@ -1,11 +1,11 @@
-package com.zzf.ezandroid.camera.widget;
+package com.rhythmcoderzzf.ezandroid.camera.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
 
-import com.zzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
 
 public class AutoFitSurfaceView extends SurfaceView {
     private static final String TAG = EZCameraUtil.TAG + AutoFitSurfaceView.class.getSimpleName();

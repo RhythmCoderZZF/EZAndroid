@@ -1,11 +1,11 @@
-package com.zzf.ezandroid.camera.core;
+package com.rhythmcoderzzf.ezandroid.camera.core;
 
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.util.Log;
 import android.util.Size;
 
-import com.zzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
 
 import java.util.Arrays;
 import java.util.Comparator;
