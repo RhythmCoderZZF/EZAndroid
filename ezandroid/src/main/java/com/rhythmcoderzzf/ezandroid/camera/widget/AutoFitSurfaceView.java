@@ -5,10 +5,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceView;
 
-import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
 
 public class AutoFitSurfaceView extends SurfaceView {
-    private static final String TAG = EZCameraUtil.TAG + AutoFitSurfaceView.class.getSimpleName();
+    private static final String TAG = EZCamera.TAG + AutoFitSurfaceView.class.getSimpleName();
     private float aspectRatio = 0f;
 
 

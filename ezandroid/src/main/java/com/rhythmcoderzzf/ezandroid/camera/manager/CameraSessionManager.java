@@ -12,12 +12,12 @@ import android.view.Surface;
 
 import androidx.annotation.NonNull;
 
-import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
 
 import java.util.Arrays;
 
 public class CameraSessionManager {
-    private static final String TAG = EZCameraUtil.TAG + CameraSessionManager.class.getSimpleName();
+    private static final String TAG = EZCamera.TAG + CameraSessionManager.class.getSimpleName();
     private final CameraCharacteristics characteristics;
     private final RequestManager mRequestMgr = new RequestManager();
     private final Handler backgroundHandler;

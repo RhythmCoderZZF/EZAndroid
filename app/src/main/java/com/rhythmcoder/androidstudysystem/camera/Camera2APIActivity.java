@@ -9,11 +9,11 @@ import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
-import com.rhythmcoderzzf.ezandroid.EZPermissionUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
+import com.rhythmcoderzzf.ezandroid.EZPermission;
 
 public class Camera2APIActivity extends BaseActivity {
-    private EZCameraUtil cameraUtil;
+    private EZCamera cameraUtil;
     private SurfaceView cameraPreview;
     private Handler handler = new Handler();
 
@@ -23,13 +23,13 @@ public class Camera2APIActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_camera_camera2_api);
         cameraPreview = findViewById(R.id.camera_preview);
-        new EZPermissionUtil(this).requestPermission(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, granted -> {
+        new EZPermission(this).requestPermission(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, granted -> {
             if (!granted) {
                 finish();
             } else {
                 handler.postDelayed(() -> {
                     cameraPreview.setVisibility(View.VISIBLE);
-                    cameraUtil = new EZCameraUtil(this);
+                    cameraUtil = new EZCamera(this);
                     cameraUtil.startPreview(cameraPreview);
                 }, 300);
             }

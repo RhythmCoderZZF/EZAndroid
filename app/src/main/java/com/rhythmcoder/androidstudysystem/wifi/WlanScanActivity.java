@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +20,7 @@ import androidx.core.content.ContextCompat;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
+import com.rhythmcoderzzf.ezandroid.connection.EZWifi;
 
 import java.util.List;
 
@@ -26,6 +28,16 @@ public class WlanScanActivity extends BaseActivity implements View.OnClickListen
     private TextView mTv;
     private WifiManager mWifiManager;
     private String[] mPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION};
+
+    private TextView tvConnectedSSID;
+    private EZWifi mEZWifiManager;
+
+    private EZWifi.Callback mCallback = new EZWifi.Callback() {
+        @Override
+        protected void onWifiConnected(WifiInfo info, String ssid) {
+            updateTvConnectedSSID(info, ssid);
+        }
+    };
 
     //1.系统会在完成扫描请求时调用此监听器，提供其成功/失败状态。
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -51,6 +63,9 @@ public class WlanScanActivity extends BaseActivity implements View.OnClickListen
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         registerReceiver(mReceiver, intentFilter);
+
+        tvConnectedSSID = findViewById(R.id.tv_ssid);
+        mEZWifiManager = EZWifi.getInstance(this, mCallback).register(this);
     }
 
     @Override
@@ -119,5 +134,9 @@ public class WlanScanActivity extends BaseActivity implements View.OnClickListen
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mReceiver);
+    }
+
+    private void updateTvConnectedSSID(WifiInfo info, String ssid) {
+        tvConnectedSSID.setText(ssid);
     }
 }

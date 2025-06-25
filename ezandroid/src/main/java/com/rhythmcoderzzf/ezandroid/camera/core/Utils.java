@@ -5,14 +5,14 @@ import android.hardware.camera2.params.StreamConfigurationMap;
 import android.util.Log;
 import android.util.Size;
 
-import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
 public class Utils {
-    public static final String TAG = EZCameraUtil.TAG + Utils.class.getSimpleName();
+    public static final String TAG = EZCamera.TAG + Utils.class.getSimpleName();
 
     /**
      * 根据屏幕尺寸和1080P限制，从相机支持的输出尺寸中选择最大的合适预览尺寸。

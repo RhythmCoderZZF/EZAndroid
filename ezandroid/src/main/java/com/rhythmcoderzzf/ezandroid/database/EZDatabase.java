@@ -3,11 +3,11 @@ package com.rhythmcoderzzf.ezandroid.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class EZDatabaseUtil {
+public class EZDatabase {
     private Context mContext;
     private SharedPreferenceModule sharedPreferenceModule;
 
-    public EZDatabaseUtil(Context context) {
+    public EZDatabase(Context context) {
         mContext = context;
     }
 

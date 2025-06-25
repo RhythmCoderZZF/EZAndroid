@@ -35,8 +35,8 @@ import com.rhythmcoderzzf.ezandroid.camera.manager.FocusManager;
 import com.rhythmcoderzzf.ezandroid.camera.core.Utils;
 import com.rhythmcoderzzf.ezandroid.core.ListenActivityResultRequest;
 
-public class EZCameraUtil<T extends View> {
-    public static final String TAG = EZCameraUtil.class.getSimpleName() + "_";
+public class EZCamera<T extends View> {
+    public static final String TAG = EZCamera.class.getSimpleName() + "_";
     private static String HOLDER_TAG = "camera_holder";
     private Context mContext;
     private static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
@@ -53,7 +53,7 @@ public class EZCameraUtil<T extends View> {
     private FocusManager mFocusManager;
     private CameraSessionManager mCameraSessionManager;
 
-    public EZCameraUtil(AppCompatActivity context) {
+    public EZCamera(AppCompatActivity context) {
         mContext = context;
         mListenActivityResultRequest = holderFragmentFor(HOLDER_TAG, context);
     }

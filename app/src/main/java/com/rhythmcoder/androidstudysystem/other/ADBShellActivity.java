@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.misc.EZShellUtil;
+import com.rhythmcoderzzf.ezandroid.misc.EZShell;
 
 public class ADBShellActivity extends BaseActivity {
     private String mShellWords = "";
@@ -37,7 +37,7 @@ public class ADBShellActivity extends BaseActivity {
         editText.setOnEditorActionListener((v, actionId, event) -> {
             toast(mShellWords);
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                String string = EZShellUtil.exeCmd(mShellWords);
+                String string = EZShell.exeCmd(mShellWords);
                 TextView textView = findViewById(R.id.tv_shell);
                 textView.setVisibility(View.VISIBLE);
                 textView.setText(string);

@@ -4,8 +4,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class EZShellUtil {
-    private static String TAG = EZShellUtil.class.getSimpleName();
+public class EZShell {
+    private static String TAG = EZShell.class.getSimpleName();
 
     public static String exeCmd(String c) {
         String result = "";

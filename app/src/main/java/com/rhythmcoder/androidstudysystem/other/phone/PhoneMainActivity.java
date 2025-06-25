@@ -8,18 +8,18 @@ import android.widget.TextView;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.EZPermissionUtil;
-import com.rhythmcoderzzf.ezandroid.phone.EZPhoneUtil;
+import com.rhythmcoderzzf.ezandroid.EZPermission;
+import com.rhythmcoderzzf.ezandroid.telephone.EZTelephone;
 
 public class PhoneMainActivity extends BaseActivity {
-    private EZPhoneUtil mPhoneUtil;
+    private EZTelephone mPhoneUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_phone);
-        mPhoneUtil = new EZPhoneUtil(this);
-        new EZPermissionUtil(this).requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS}, new EZPermissionUtil.OnPermissionListener() {
+        mPhoneUtil = new EZTelephone(this);
+        new EZPermission(this).requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS}, new EZPermission.OnPermissionListener() {
             @Override
             public void onPermissionGranted(boolean granted) {
                 if (granted) {

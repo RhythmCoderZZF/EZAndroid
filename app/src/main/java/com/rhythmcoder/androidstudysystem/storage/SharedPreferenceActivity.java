@@ -5,10 +5,10 @@ import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.database.EZDatabaseUtil;
+import com.rhythmcoderzzf.ezandroid.database.EZDatabase;
 
 public class SharedPreferenceActivity extends BaseActivity implements View.OnClickListener {
-    private EZDatabaseUtil.SharedPreferenceModule ezSharePreference;
+    private EZDatabase.SharedPreferenceModule ezSharePreference;
     private String sharedPreferenceFileName = "MySharedPreference";
 
     @Override
@@ -17,7 +17,7 @@ public class SharedPreferenceActivity extends BaseActivity implements View.OnCli
         setContentView(R.layout.activity_storage_shared_preference);
         findViewById(R.id.btn_read).setOnClickListener(this);
         findViewById(R.id.btn_write).setOnClickListener(this);
-        ezSharePreference = new EZDatabaseUtil(this).getSharedPreferenceModule(sharedPreferenceFileName);
+        ezSharePreference = new EZDatabase(this).getSharedPreferenceModule(sharedPreferenceFileName);
     }
 
 

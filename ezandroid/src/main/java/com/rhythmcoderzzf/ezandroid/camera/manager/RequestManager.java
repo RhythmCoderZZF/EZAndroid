@@ -5,10 +5,10 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.MeteringRectangle;
 import android.util.Log;
 
-import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
 
 public class RequestManager {
-    private static final String TAG = EZCameraUtil.TAG + RequestManager.class.getSimpleName();
+    private static final String TAG = EZCamera.TAG + RequestManager.class.getSimpleName();
     private MeteringRectangle[] mFocusArea;
     private MeteringRectangle[] mMeteringArea;
     private MeteringRectangle[] mResetRect = new MeteringRectangle[]{new MeteringRectangle(0, 0, 0, 0, 0)};

@@ -6,11 +6,11 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.params.MeteringRectangle;
 import android.os.Handler;
 
-import com.rhythmcoderzzf.ezandroid.camera.EZCameraUtil;
+import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
 import com.rhythmcoderzzf.ezandroid.camera.core.CoordinateTransformer;
 
 public class FocusManager {
-    private static final String TAG = EZCameraUtil.TAG + FocusManager.class.getSimpleName();
+    private static final String TAG = EZCamera.TAG + FocusManager.class.getSimpleName();
     private final Handler mHandler;
     private Rect mPreviewRect;
     private Rect mFocusRect = new Rect();

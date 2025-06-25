@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.ezandroid.phone;
+package com.rhythmcoderzzf.ezandroid.telephone;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -9,12 +9,12 @@ import android.telephony.TelephonyManager;
 
 import androidx.annotation.RequiresPermission;
 
-public class EZPhoneUtil {
-    private static final String TAG = EZPhoneUtil.class.getSimpleName();
+public class EZTelephone {
+    private static final String TAG = EZTelephone.class.getSimpleName();
     private final TelephonyManager telephonyManager;
     private final SubscriptionManager subscriptManager;
 
-    public EZPhoneUtil(Context context) {
+    public EZTelephone(Context context) {
         telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         subscriptManager = (SubscriptionManager) context.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE);
     }

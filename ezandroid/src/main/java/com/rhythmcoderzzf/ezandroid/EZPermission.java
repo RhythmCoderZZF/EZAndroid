@@ -14,15 +14,15 @@ import com.rhythmcoderzzf.ezandroid.core.ListenActivityResultRequest;
 
 import java.util.Arrays;
 
-public class EZPermissionUtil {
-    private final String TAG = EZPermissionUtil.class.getSimpleName();
+public class EZPermission {
+    private final String TAG = EZPermission.class.getSimpleName();
     private static String HOLDER_TAG = "permission_holder";
     private final Activity context;
     private OnPermissionListener mListener;
 
     private ListenActivityResultRequest mListenActivityResultRequest;
 
-    public EZPermissionUtil(FragmentActivity context) {
+    public EZPermission(FragmentActivity context) {
         this.context = context;
         mListenActivityResultRequest = holderFragmentFor(HOLDER_TAG, context);
     }
