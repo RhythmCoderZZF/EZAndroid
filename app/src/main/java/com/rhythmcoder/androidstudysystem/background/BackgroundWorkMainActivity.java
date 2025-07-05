@@ -1,11 +1,16 @@
 package com.rhythmcoder.androidstudysystem.background;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+
+import androidx.annotation.NonNull;
+import androidx.viewbinding.ViewBinding;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.androidstudysystem.background.alarm.BackgroundAlarmActivity;
 import com.rhythmcoder.androidstudysystem.background.service.BackgroundServiceActivity;
 import com.rhythmcoder.androidstudysystem.background.service.fgservice.BackgroundForegroundServiceActivity;
+import com.rhythmcoder.androidstudysystem.databinding.ActivityBackgroundAlarmBinding;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.ListAdapter;
 import com.rhythmcoder.baselib.TitleBean;
@@ -28,6 +33,11 @@ public class BackgroundWorkMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rv);
         initSimpleProjectListView(findViewById(R.id.rv), new ListAdapter(initRvDataList()));
+    }
+
+    @Override
+    protected ViewBinding inflateViewBinding(@NonNull LayoutInflater layoutInflater) {
+        return ActivityBackgroundAlarmBinding.inflate(layoutInflater);
     }
 
 }

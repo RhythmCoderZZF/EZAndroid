@@ -6,7 +6,6 @@ import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
 import com.rhythmcoder.baselib.ListAdapter;
 import com.rhythmcoder.baselib.TitleBean;
-import com.rhythmcoder.androidstudysystem.storage.all.StorageAppSpecificActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +14,8 @@ public class StorageMainActivity extends BaseActivity {
     private final List<TitleBean> mList = new ArrayList<>();
 
     private List<TitleBean> initRvDataList() {
-        mList.add(new TitleBean(getString(R.string.storage_app_specific_files), getString(R.string.storage_app_specific_files_sub_title), getString(R.string.storage_app_specific_files_info), StorageAppSpecificActivity.class));
-        mList.add(new TitleBean("SharedPreference", "", "偏好存储", SharedPreferenceActivity.class));
+        mList.add(new TitleBean("应用专属存储", "应用专属存储的空间", getString(R.string.storage_app_specific_files_info), StorageAppSpecificActivity.class));
+        mList.add(new TitleBean("SharedPreference", "", "偏好存储", StorageSharedPreferenceActivity.class));
         return mList;
     }
 

@@ -138,8 +138,8 @@
         </activity>
         <!-- [Storage] -->
         <activity android:name=".storage.StorageMainActivity" />
-        <activity android:name=".storage.all.StorageAppSpecificActivity" />
-        <activity android:name=".storage.SharedPreferenceActivity" />
+        <activity android:name=".storage.StorageAppSpecificActivity" />
+        <activity android:name=".storage.StorageSharedPreferenceActivity" />
         <!-- [Background Work] -->
         <activity android:name=".background.BackgroundWorkMainActivity" />
         <activity android:name=".background.alarm.BackgroundAlarmActivity" />

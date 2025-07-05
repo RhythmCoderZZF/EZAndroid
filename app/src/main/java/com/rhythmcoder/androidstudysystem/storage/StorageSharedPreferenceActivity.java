@@ -5,10 +5,10 @@ import android.view.View;
 
 import com.rhythmcoder.androidstudysystem.R;
 import com.rhythmcoder.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.database.EZDatabase;
+import com.rhythmcoderzzf.ezandroid.storage.EZStorage;
 
-public class SharedPreferenceActivity extends BaseActivity implements View.OnClickListener {
-    private EZDatabase.SharedPreferenceModule ezSharePreference;
+public class StorageSharedPreferenceActivity extends BaseActivity implements View.OnClickListener {
+    private EZStorage.SharedPreferenceModule ezSharePreference;
     private String sharedPreferenceFileName = "MySharedPreference";
 
     @Override
@@ -17,7 +17,8 @@ public class SharedPreferenceActivity extends BaseActivity implements View.OnCli
         setContentView(R.layout.activity_storage_shared_preference);
         findViewById(R.id.btn_read).setOnClickListener(this);
         findViewById(R.id.btn_write).setOnClickListener(this);
-        ezSharePreference = new EZDatabase(this).getSharedPreferenceModule(sharedPreferenceFileName);
+        ezSharePreference = EZStorage.getInstance(this).
+                loadSharedPreference(sharedPreferenceFileName, true);
     }
 
 
@@ -25,10 +26,12 @@ public class SharedPreferenceActivity extends BaseActivity implements View.OnCli
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_write:
-                ezSharePreference.setValue("SharedPreference", "Hello SharedPreference!");
+                ezSharePreference.putString("hello", "Jack");
+                toast("写入Key:hello,value:Jack");
                 break;
             case R.id.btn_read:
-                toast(ezSharePreference.getValue("SharedPreference"));
+                String value = ezSharePreference.getString("hello", "");
+                toast("读取Key:hello,value" + value);
                 break;
         }
     }

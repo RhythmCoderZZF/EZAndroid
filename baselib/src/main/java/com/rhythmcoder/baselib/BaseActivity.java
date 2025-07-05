@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -16,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.viewbinding.ViewBinding;
 
 import com.rhythmcoder.baselib.cmd.CmdUtil;
 import com.rhythmcoder.baselib.utils.Constants;
@@ -26,8 +30,9 @@ import com.rhythmcoder.baselib.utils.LogUtil;
  * Date:2023/12/16
  * Description:
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity<VB extends ViewBinding> extends AppCompatActivity {
     protected static String TAG = "";
+    protected VB mBinding;
     private String mInfo;
     private Dialog mDialogInfo;
 
@@ -47,6 +52,14 @@ public class BaseActivity extends AppCompatActivity {
         }
         mInfo = mInfo == null ? "" : mInfo;
         actionBar.setDisplayHomeAsUpEnabled(true);
+        mBinding = inflateViewBinding(getLayoutInflater());
+        if (mBinding != null) {
+            setContentView(mBinding.getRoot());
+        }
+    }
+
+    protected VB inflateViewBinding(@NonNull LayoutInflater layoutInflater) {
+        return null;
     }
 
     @Override

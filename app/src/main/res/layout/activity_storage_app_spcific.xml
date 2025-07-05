@@ -6,26 +6,36 @@
 
     <TextView
         style="@style/BaseCategoryTextView.Normal"
-        android:text="persistent files" />
+        android:text="internal文件" />
 
     <Button
-        android:id="@+id/btnCreateFile"
+        android:id="@+id/btn_internal_cache"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Access and store files" />
-
-
+        android:text="写读一个文本文件到internal cache" />
     <Button
-        android:id="@+id/btnStoreFile"
+        android:id="@+id/btn_internal_file"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Store a file using a stream" />
+        android:text="将cache内容读取并copy到internal file" />
+
+    <TextView
+        style="@style/BaseCategoryTextView.Normal"
+        android:text="external文件" />
     <Button
-        android:id="@+id/btnAccessFile"
+        android:id="@+id/btn_external_cache"
         style="@style/BaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Access a file using a stream" />
+        android:text="写读一个文本文件到external cache" />
+
+    <Button
+        android:id="@+id/btn_external_file"
+        style="@style/BaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="将cache内容读取并copy到external file" />
+
 </LinearLayout>
