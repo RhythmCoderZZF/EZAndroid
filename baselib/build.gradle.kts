@@ -3,7 +3,7 @@ plugins {
 }
 
 android {
-    namespace = "com.rhythmcoder.baselib"
+    namespace = "com.rhythmcoderzzf.baselib"
     compileSdk = 34
 
     defaultConfig {

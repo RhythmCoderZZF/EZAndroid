@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "com.rhythmcoder.androidstudysystem"
+    namespace = "com.rhythmcoderzzf.androidstudysystem"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.rhythmcoder.androidstudysystem"
+        applicationId = "com.rhythmcoderzzf.androidstudysystem"
         minSdk = 29
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 29
