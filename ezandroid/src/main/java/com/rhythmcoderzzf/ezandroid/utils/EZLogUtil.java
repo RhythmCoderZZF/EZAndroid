@@ -6,11 +6,11 @@ import android.util.Log;
 import com.rhythmcoderzzf.ezandroid.Config;
 
 public class EZLogUtil {
-    private static final int V = 0;
-    private static final int D = 1;
-    private static final int I = 2;
-    private static final int W = 3;
-    private static final int E = 4;
+    public static final int V = 0;
+    public static final int D = 1;
+    public static final int I = 2;
+    public static final int W = 3;
+    public static final int E = 4;
 
     public static void v(String tag, String msg) {
         v(tag, msg, null);
@@ -56,19 +56,21 @@ public class EZLogUtil {
         tag = Config.PREFIX_TAG + tag;
         switch (level) {
             case V:
-                if (isDebugMode()) Log.v(tag, msg);
+                if (isDebugMode() && Config.EZ_LOG_LEVEL <= V) {
+                    Log.v(tag, msg);
+                }
                 break;
             case D:
-                Log.d(tag, msg, t);
+                if (Config.EZ_LOG_LEVEL <= D) Log.d(tag, msg, t);
                 break;
             case I:
-                Log.i(tag, msg, t);
+                if (Config.EZ_LOG_LEVEL <= I) Log.i(tag, msg, t);
                 break;
             case W:
-                Log.w(tag, msg, t);
+                if (Config.EZ_LOG_LEVEL <= W) Log.w(tag, msg, t);
                 break;
             case E:
-                Log.e(tag, msg, t);
+                if (Config.EZ_LOG_LEVEL <= E) Log.e(tag, msg, t);
                 break;
             default:
                 break;

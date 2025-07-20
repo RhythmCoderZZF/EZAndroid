@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.androidstudysystem.databinding.ActivityWifiWlanScanBinding;
 import com.rhythmcoderzzf.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.EZPermission;
+import com.rhythmcoderzzf.ezandroid.permission.EZPermission;
 import com.rhythmcoderzzf.ezandroid.connection.EZWifi;
 
 import java.util.List;
@@ -50,10 +50,10 @@ public class WlanScanActivity extends BaseActivity<ActivityWifiWlanScanBinding> 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_scan) {
-            new EZPermission(this).requestPermission(new String[]{Manifest.permission.ACCESS_FINE_LOCATION
-                    , Manifest.permission.CHANGE_WIFI_STATE}, (grant) -> {
-                if (!mEZWifi.startScan()) {
-                   toast("请打开Wifi");
+            new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION
+                    , Manifest.permission.CHANGE_WIFI_STATE).build().requestPermission((granted, deniedPermissions) -> {
+                if (granted && !mEZWifi.startScan()) {
+                    toast("请打开Wifi");
                 }
             });
         }

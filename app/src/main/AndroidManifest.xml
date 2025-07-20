@@ -63,6 +63,7 @@
 
     <application
         android:name=".App"
+        android:allowAudioPlaybackCapture="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:enableOnBackInvokedCallback="true"
@@ -149,10 +150,11 @@
         <activity android:name=".wifi.WifiMainActivity" />
         <activity android:name=".wifi.WlanScanActivity" />
         <activity android:name=".wifi.p2p.WlanP2PActivity" />
-        <activity android:name=".media.MediaProjectionSimpleActivity" />
         <!-- [Media] -->
         <activity android:name=".media.MediaMainActivity" />
         <activity android:name=".media.MediaProjectionRecordActivity" />
+        <activity android:name=".media.MediaProjectionSimpleActivity" />
+        <activity android:name=".media.MediaProjectionRecordAudioActivity" />
         <activity android:name=".camera.CameraIntentActivity" />
         <!-- [Other] -->
         <activity android:name=".other.ADBShellActivity" />
@@ -186,8 +188,8 @@
             android:exported="true" />
         <service
             android:name=".other.softkeyboard.IMEService"
-            android:label="@string/app_name"
             android:exported="true"
+            android:label="@string/app_name"
             android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />

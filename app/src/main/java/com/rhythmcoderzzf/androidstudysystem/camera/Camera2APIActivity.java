@@ -10,7 +10,7 @@ import android.view.View;
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
-import com.rhythmcoderzzf.ezandroid.EZPermission;
+import com.rhythmcoderzzf.ezandroid.permission.EZPermission;
 
 public class Camera2APIActivity extends BaseActivity {
     private EZCamera cameraUtil;
@@ -23,8 +23,9 @@ public class Camera2APIActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_camera_camera2_api);
         cameraPreview = findViewById(R.id.camera_preview);
-        new EZPermission(this).requestPermission(new String[]{Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO}, granted -> {
+        new EZPermission.Builder(this).applyUseActivityResultApi(false).applyRequestPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).build().requestPermission((granted, deniedPermissions) -> {
             if (!granted) {
+                toast("请打开权限");
                 finish();
             } else {
                 handler.postDelayed(() -> {

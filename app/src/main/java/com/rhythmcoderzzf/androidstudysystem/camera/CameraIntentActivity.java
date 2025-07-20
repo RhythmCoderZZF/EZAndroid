@@ -7,7 +7,7 @@ import android.view.View;
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.ezandroid.camera.EZCamera;
 import com.rhythmcoderzzf.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.EZPermission;
+import com.rhythmcoderzzf.ezandroid.permission.EZPermission;
 
 /**
  * <a href="https://developer.android.google.cn/media/camera/camera-intents?hl=zh-cn">相机 intent</a>
@@ -23,7 +23,7 @@ public class CameraIntentActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_media_camera_intent);
         findViewById(R.id.btn_lunch_camera).setOnClickListener(this);
         findViewById(R.id.btn_lunch_video).setOnClickListener(this);
-        new EZPermission(this).requestPermission(new String[]{Manifest.permission.CAMERA}, granted -> {
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.CAMERA).build().requestPermission((granted, deniedPermissions) -> {
 
         });
         cameraUtil = new EZCamera(this);

@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.baselib.BaseActivity;
-import com.rhythmcoderzzf.ezandroid.EZPermission;
+import com.rhythmcoderzzf.ezandroid.permission.EZPermission;
 import com.rhythmcoderzzf.ezandroid.telephone.EZTelephone;
 
 public class PhoneMainActivity extends BaseActivity {
@@ -19,16 +19,13 @@ public class PhoneMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_phone);
         mPhoneUtil = new EZTelephone(this);
-        new EZPermission(this).requestPermission(new String[]{Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS}, new EZPermission.OnPermissionListener() {
-            @Override
-            public void onPermissionGranted(boolean granted) {
-                if (granted) {
-                    start();
-                }
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS).build().requestPermission((granted, deniedPermissions) -> {
+            if (granted) {
+                start();
             }
-
         });
     }
+
     @SuppressLint("MissingPermission")
     private void start() {
         TextView tvPhoneNumber = (TextView) findViewById(R.id.tv_phone_number);
