@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.androidstudysystem.camera.CameraIntentActivity;
+import com.rhythmcoderzzf.androidstudysystem.media.mediaselector.MediaSelectorActivity;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.baselib.ListAdapter;
 import com.rhythmcoderzzf.baselib.TitleBean;
@@ -18,6 +19,7 @@ public class MediaMainActivity extends BaseActivity {
         list.add(new TitleBean("录屏", "使用MediaProjection简单实现录屏", "", MediaProjectionSimpleActivity.class));
         list.add(new TitleBean("录屏+录音", "MediaProjection + MediaRecord实现录屏录音", "", MediaProjectionRecordActivity.class));
         list.add(new TitleBean("Camera", "使用Intent操作默认相机应用", "", CameraIntentActivity.class));
+        list.add(new TitleBean("媒体文件选择器", "选择本地的照片、视频等媒体文件", "", MediaSelectorActivity.class));
         return list;
     }
 

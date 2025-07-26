@@ -155,12 +155,14 @@
         <activity android:name=".media.MediaProjectionRecordActivity" />
         <activity android:name=".media.MediaProjectionSimpleActivity" />
         <activity android:name=".media.MediaProjectionRecordAudioActivity" />
+        <activity android:name=".media.mediaselector.MediaSelectorActivity" />
         <activity android:name=".camera.CameraIntentActivity" />
         <!-- [Other] -->
         <activity android:name=".other.ADBShellActivity" />
         <activity android:name=".other.OtherMainActivity" />
         <activity android:name=".ui.UIMainActivity" />
         <activity android:name=".ui.paint.UIPaintActivity" />
+        <activity android:name=".ui.virtualdisplay.UIVirtualDisplayActivity" />
         <activity android:name=".sensor.SensorMainActivity" />
         <activity android:name=".sensor.SensorBaseActivity" />
         <!-- [UI-Views] -->

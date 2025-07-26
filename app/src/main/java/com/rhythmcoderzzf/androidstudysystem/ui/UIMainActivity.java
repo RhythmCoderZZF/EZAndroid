@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.androidstudysystem.ui.paint.UIPaintActivity;
+import com.rhythmcoderzzf.androidstudysystem.ui.virtualdisplay.UIVirtualDisplayActivity;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.baselib.ListAdapter;
 import com.rhythmcoderzzf.baselib.TitleBean;
@@ -15,6 +16,7 @@ public class UIMainActivity extends BaseActivity {
     private List<TitleBean> initRvDataList() {
         List<TitleBean> list = new ArrayList<>();
         list.add(new TitleBean("Paint API", UIPaintActivity.class));
+        list.add(new TitleBean("虚拟屏幕", "Presentation实现虚拟投屏", "", UIVirtualDisplayActivity.class));
         return list;
     }
 

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.rhythmcoderzzf.ezandroid.core.AbstractBuilder;
 import com.rhythmcoderzzf.ezandroid.core.ListenActivityResultRequest;
 
 import java.util.ArrayList;
@@ -19,17 +20,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * EZ权限请求。使用方式：
- *
- * @<code> new EZPermission.Builder(this)
- * .applyRequestPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO) </br>
- * .build()</br>
- * .requestPermission((granted, deniedPermissions) -> {</br>
- * if (granted) {</br>
- * //...</br>
- * }</br>
- * });
- * </code>
+ * EZ权限请求。
+ * 使用方式：
+ * <pre>
+ *     new EZPermission.Builder(this)
+ *              .applyRequestPermission(Manifest.permission.CAMERA,...)
+ *              .build()
+ *              .requestPermission((granted, deniedPermissions) -> {
+ *                  if (granted) {
+ *                      //...
+ *                   }
+ *              });
+ * </pre>
  */
 public class EZPermission {
     private static final String TAG = EZPermission.class.getSimpleName();
@@ -139,7 +141,7 @@ public class EZPermission {
         void onPermissionGranted(boolean granted, List<String> deniedPermissions);
     }
 
-    public static class Builder {
+    public static class Builder implements AbstractBuilder<EZPermission> {
         private boolean tmpApplyNotUseActivityResultAPI;
         private String[] tmpPermissions;
         private FragmentActivity tmpContext;
