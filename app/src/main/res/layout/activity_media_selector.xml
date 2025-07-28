@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/BaseCategoryTextView.Normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择3张照片" />
+
+    <Button
+        android:id="@+id/btn_choose_picture"
+        style="@style/BaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img1"
+            android:layout_width="100dp"
+            android:layout_height="200dp" />
+
+        <ImageView
+            android:id="@+id/img2"
+            android:layout_width="100dp"
+            android:layout_height="200dp" />
+
+        <ImageView
+            android:id="@+id/img3"
+            android:layout_width="100dp"
+            android:layout_height="200dp" />
+    </LinearLayout>
+
+    <TextView
+        style="@style/BaseCategoryTextView.Normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择视频" />
+
+    <Button
+        android:id="@+id/btn_choose_video"
+        style="@style/BaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="选择" />
+</LinearLayout>

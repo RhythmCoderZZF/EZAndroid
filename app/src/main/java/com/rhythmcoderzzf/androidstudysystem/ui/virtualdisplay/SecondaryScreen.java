@@ -6,31 +6,32 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
+import android.graphics.PixelFormat;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
 import android.media.Image;
 import android.media.ImageReader;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.util.Log;
 import android.view.Surface;
 import android.widget.ImageView;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
+import com.rhythmcoderzzf.ezandroid.utils.EZLogUtil;
 
 import java.nio.ByteBuffer;
 
 public class SecondaryScreen {
     private static final String TAG = "SecondaryScreen";
-    public static final String DISPLAY_NAME = "ST77916TestDisplay111";
+    public static final String DISPLAY_NAME = "ST77916TestDisplay";
     private final DisplayManager mDisplayManager;
     private final Activity mContext;
     private final ImageView imageView;
     private VirtualDisplay mVirtualDisplay;
     private ImageReader mImageReader;
 
-    private final int VIRTUAL_DISPLAY_WIDTH = 100; // 虚拟显示器宽度
-    private final int VIRTUAL_DISPLAY_HEIGHT = 200; // 虚拟显示器高度
+    private final int VIRTUAL_DISPLAY_WIDTH = 200; // 虚拟显示器宽度
+    private final int VIRTUAL_DISPLAY_HEIGHT = 400; // 虚拟显示器高度
     private static final int VIRTUAL_DISPLAY_DPI = 160;
 
     private final HandlerThread handlerThread;
@@ -49,7 +50,7 @@ public class SecondaryScreen {
         if (mVirtualDisplay != null) {
             return;
         }
-        mImageReader = ImageReader.newInstance(VIRTUAL_DISPLAY_WIDTH, VIRTUAL_DISPLAY_HEIGHT, ImageFormat.RGB_565, 2);
+        mImageReader = ImageReader.newInstance(VIRTUAL_DISPLAY_WIDTH, VIRTUAL_DISPLAY_HEIGHT, PixelFormat.RGBA_8888, 2);
         Canvas canvas = mImageReader.getSurface().lockHardwareCanvas();
         Matrix matrix = new Matrix();
         matrix.postRotate(90, canvas.getWidth() / 2f, canvas.getHeight() / 2f);
@@ -90,7 +91,7 @@ public class SecondaryScreen {
                     int rowStride = planes[0].getRowStride();
                     int width = image.getWidth();
                     int height = image.getHeight();
-                    Bitmap bitmap = Bitmap.createBitmap(((rowStride - (pixelStride * width)) / pixelStride) + width, height, Bitmap.Config.RGB_565);
+                    Bitmap bitmap = Bitmap.createBitmap(((rowStride - (pixelStride * width)) / pixelStride) + width, height, Bitmap.Config.ARGB_8888);
                     buffer.rewind();
                     bitmap.copyPixelsFromBuffer(buffer);
                     if (bitmap.getWidth() == width && bitmap.getHeight() == height) {
@@ -101,10 +102,10 @@ public class SecondaryScreen {
                     return croppedBitmap;
                 }
             }
-            Log.e(TAG, "Image planes are null or empty.");
+            EZLogUtil.e(TAG, "Image planes are null or empty.");
             return null;
         } catch (Exception e) {
-            Log.e(TAG, "将 Image 转换为 Bitmap 时出错: " + e.getMessage(), e);
+            EZLogUtil.e(TAG, "将 Image 转换为 Bitmap 时出错: " + e.getMessage(), e);
             return null;
         }
     }
