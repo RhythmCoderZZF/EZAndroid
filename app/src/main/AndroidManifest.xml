@@ -173,6 +173,9 @@
         <activity android:name=".camera.CameraMainActivity" />
         <activity android:name=".camera.Camera2APIActivity" />
         <activity android:name=".other.phone.PhoneMainActivity" />
+        <!--[JNI]-->
+        <activity android:name=".jni.JNIMainActivity" />
+        <activity android:name=".jni.JNISampleActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

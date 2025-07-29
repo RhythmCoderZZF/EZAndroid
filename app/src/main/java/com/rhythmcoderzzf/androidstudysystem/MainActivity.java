@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.rhythmcoderzzf.androidstudysystem.background.BackgroundWorkMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.camera.CameraMainActivity;
+import com.rhythmcoderzzf.androidstudysystem.jni.JNIMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.media.MediaMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.other.OtherMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.sensor.SensorMainActivity;
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity {
         mList.add(new TitleBean("UI-Views", UIViewsMainActivity.class));
         mList.add(new TitleBean("多媒体(Media)","","", MediaMainActivity.class));
         mList.add(new TitleBean("相机(Camera)","Intent启动相机","", CameraMainActivity.class));
+        mList.add(new TitleBean("JNI","JNI学习","", JNIMainActivity.class));
     }
 
     @Override
