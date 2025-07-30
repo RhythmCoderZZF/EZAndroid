@@ -3,7 +3,6 @@ package com.rhythmcoderzzf.ezandroid.permission;
 import static com.rhythmcoderzzf.ezandroid.core.ListenActivityResultFragment.holderFragmentFor;
 
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -15,12 +14,11 @@ import com.rhythmcoderzzf.ezandroid.core.AbstractBuilder;
 import com.rhythmcoderzzf.ezandroid.core.ListenActivityResultRequest;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
- * EZ权限请求。
+ * EZ 权限请求。
  * 使用方式：
  * <pre>
  *     new EZPermission.Builder(this)
@@ -40,7 +38,7 @@ public class EZPermission {
     private OnPermissionListener mListener;
     private String[] mPermissions;
     /**
-     * 使用ActivityResultRequest API 请求权限
+     * 默认使用ActivityResultRequest API 请求权限
      */
     private boolean mNotUseActivityResultAPI = false;
     private ActivityResultLauncher activityResultLauncher;
@@ -48,7 +46,6 @@ public class EZPermission {
 
     private EZPermission(FragmentActivity context) {
         this.mContext = context;
-
     }
 
     private EZPermission onInit() {
@@ -72,23 +69,21 @@ public class EZPermission {
             }
         }
         if (mPermissions.length == permissionGrantedCount) {
-            Log.i(TAG, "all permissions already granted");
             listener.onPermissionGranted(true, null);
             return;
         }
         mListener = listener;
         if (!mNotUseActivityResultAPI) {
-            requestPermissionByUserActivityResultLauncher();
+            requestPermissionByActivityResultLauncher();
         } else
             mListenActivityResultRequest.requestPermissionForResult(mPermissions, 0, this::onRequestPermissionResult);
     }
 
-    private void requestPermissionByUserActivityResultLauncher() {
+    private void requestPermissionByActivityResultLauncher() {
         activityResultLauncher.launch(mPermissions);
     }
 
     private void onRequestPermissionByUserActivityResultLauncherResult(Map<String, Boolean> allPermissionsMap) {
-        Log.d(TAG, "onRequestPermissionByUserActivityResultLauncherResult allPermissionsMap:" + allPermissionsMap);
         //拒绝权限列表
         final List<String> deniedPermissions = new ArrayList<>();
         //永久拒绝权限列表（拒绝且不在提示）
@@ -114,8 +109,6 @@ public class EZPermission {
         if (mListener == null) {
             return;
         }
-        Log.d(TAG, "onRequestPermissionResult permissions:" + Arrays.toString(permissions) + " grantResults:" + Arrays.toString(grantResults));
-        // If request is cancelled, the result arrays are empty.
         if (permissions.length > 0) {
             //拒绝权限列表
             final List<String> deniedPermissions = new ArrayList<>();

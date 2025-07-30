@@ -30,32 +30,36 @@ public class StorageAppSpecificActivity extends BaseActivity<ActivityStorageAppS
     }
 
     private void internalCache(View view) {
-        EZStorage.AppSpecificModule module = null;
+        EZStorage ezStorage = null;
         try {
-            module = EZStorage.getInstance(this).loadAppSpecific().targetFile("temp.txt", EZStorage.AppSpecificModule.TYPE_DIR_CACHE, null);
-            EZFileUtil.writeText(module.getOutputStream(), "hello\r\n", false);
-            toast("写成功" + module.getFile().getAbsolutePath());
-            String content = EZFileUtil.readText(module.getInputStream());
+            ezStorage = new EZStorage.Builder(this)
+                    .applyFileName("temp.txt")
+                    .applyFileType(EZStorage.TYPE_INTERNAL_DIR_CACHE)
+                    .build();
+            EZFileUtil.writeText(ezStorage.getOutputStream(), "hello\r\n", false);
+            toast("写成功" + ezStorage.getFile().getAbsolutePath());
+            String content = EZFileUtil.readText(ezStorage.getInputStream());
             toast("读取数据：" + content);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            if (module != null) {
-                module.release();
+            if (ezStorage != null) {
+                ezStorage.release();
             }
         }
     }
 
     private void internalFile(View view) {
-        EZStorage.AppSpecificModule tempModule = null;
-        EZStorage.AppSpecificModule module = null;
+        EZStorage tempModule = null;
+        EZStorage module = null;
+
         try {
-            tempModule = EZStorage.getInstance(this).loadAppSpecific().targetFile("temp.txt", EZStorage.AppSpecificModule.TYPE_DIR_CACHE, null);
+            tempModule = new EZStorage.Builder(this).applyFileName("temp.txt").applyFileType(EZStorage.TYPE_INTERNAL_DIR_CACHE).build();
             EZFileUtil.writeText(tempModule.getOutputStream(), "hello Jack!\r\n", false);
 
-            module = EZStorage.getInstance(this).loadAppSpecific().targetFile("copy_temp.txt", EZStorage.AppSpecificModule.TYPE_DIR_FILE, null);
+            module = new EZStorage.Builder(this).applyFileName("copy_temp.txt").applyFileType(EZStorage.TYPE_INTERNAL_DIR_FILE).build();
             EZFileUtil.copyStream(tempModule.getInputStream(), module.getOutputStream());
-            toast("copy成功"+ module.getFile().getAbsolutePath());
+            toast("copy成功" + module.getFile().getAbsolutePath());
             String content = EZFileUtil.readText(module.getInputStream());
             toast("读取数据：" + content);
         } catch (Exception e) {
@@ -69,11 +73,11 @@ public class StorageAppSpecificActivity extends BaseActivity<ActivityStorageAppS
     }
 
     private void externalCache(View view) {
-        EZStorage.AppSpecificModule module = null;
+        EZStorage module = null;
         try {
-            module = EZStorage.getInstance(this).loadAppSpecific().targetFile("temp.txt", EZStorage.AppSpecificModule.TYPE_EXTERNAL_CACHE, null);
+            module = new EZStorage.Builder(this).applyFileName("temp.txt").applyFileType(EZStorage.TYPE_EXTERNAL_CACHE).build();
             EZFileUtil.writeText(module.getOutputStream(), "I'm Jack!\r\n", false);
-            toast("写成功"+ module.getFile().getAbsolutePath());
+            toast("写成功" + module.getFile().getAbsolutePath());
             String content = EZFileUtil.readText(module.getInputStream());
             toast("读取数据：" + content);
         } catch (Exception e) {
@@ -86,15 +90,15 @@ public class StorageAppSpecificActivity extends BaseActivity<ActivityStorageAppS
     }
 
     private void externalFile(View view) {
-        EZStorage.AppSpecificModule tempModule = null;
-        EZStorage.AppSpecificModule module = null;
+        EZStorage tempModule = null;
+        EZStorage module = null;
         try {
-            tempModule = EZStorage.getInstance(this).loadAppSpecific().targetFile("temp.txt", EZStorage.AppSpecificModule.TYPE_EXTERNAL_CACHE, null);
+            tempModule = new EZStorage.Builder(this).applyFileName("temp.txt").applyFileType(EZStorage.TYPE_EXTERNAL_CACHE).build();
             EZFileUtil.writeText(tempModule.getOutputStream(), "Hello I'm Jack!\r\n", false);
 
-            module = EZStorage.getInstance(this).loadAppSpecific().targetFile("copy_temp.txt", EZStorage.AppSpecificModule.TYPE_EXTERNAL_FILE_SUB, Environment.DIRECTORY_MUSIC);
+            module = new EZStorage.Builder(this).applyFileName("copy_temp.txt").applyFileType(EZStorage.TYPE_EXTERNAL_FILE_SUB_MUSIC).build();
             EZFileUtil.copyStream(tempModule.getInputStream(), module.getOutputStream());
-            toast("copy成功"+ module.getFile().getAbsolutePath());
+            toast("copy成功" + module.getFile().getAbsolutePath());
             String content = EZFileUtil.readText(module.getInputStream());
             toast("读取数据：" + content);
         } catch (Exception e) {

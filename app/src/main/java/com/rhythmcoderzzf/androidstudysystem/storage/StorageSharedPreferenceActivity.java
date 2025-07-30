@@ -1,15 +1,16 @@
 package com.rhythmcoderzzf.androidstudysystem.storage;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.baselib.BaseActivity;
+import com.rhythmcoderzzf.ezandroid.storage.EZSharedPreference;
 import com.rhythmcoderzzf.ezandroid.storage.EZStorage;
 
 public class StorageSharedPreferenceActivity extends BaseActivity implements View.OnClickListener {
-    private EZStorage.SharedPreferenceModule ezSharePreference;
-    private String sharedPreferenceFileName = "MySharedPreference";
+    private EZSharedPreference ezSharePreference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,11 +18,15 @@ public class StorageSharedPreferenceActivity extends BaseActivity implements Vie
         setContentView(R.layout.activity_storage_shared_preference);
         findViewById(R.id.btn_read).setOnClickListener(this);
         findViewById(R.id.btn_write).setOnClickListener(this);
-        ezSharePreference = EZStorage.getInstance(this).
-                loadSharedPreference(sharedPreferenceFileName, true);
+        String sharedPreferenceFileName = "MySharedPreference";
+        ezSharePreference = new EZSharedPreference.Builder(this)
+                .applyApplyMode(true)
+                .applyPreferenceFileName(sharedPreferenceFileName)
+                .build();
     }
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v) {
         switch (v.getId()) {

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 
-import com.rhythmcoderzzf.androidstudysystem.R;
 import com.rhythmcoderzzf.androidstudysystem.databinding.ActivityJniSampleBinding;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 
