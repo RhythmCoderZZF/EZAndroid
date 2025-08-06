@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.androidstudysystem.wifi.p2p;
+package com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
-import com.rhythmcoderzzf.androidstudysystem.wifi.p2p.wifidirect.WiFiDirectMgr;
-import com.rhythmcoderzzf.androidstudysystem.wifi.p2p.wifidirect.WifiDirectConnectInfo;
+import com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p.wifidirect.WiFiDirectMgr;
+import com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p.wifidirect.WifiDirectConnectInfo;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.baselib.cmd.CmdUtil;
 

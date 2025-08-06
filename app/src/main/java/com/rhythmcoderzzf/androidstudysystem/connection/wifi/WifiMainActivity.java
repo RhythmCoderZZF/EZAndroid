@@ -1,9 +1,9 @@
-package com.rhythmcoderzzf.androidstudysystem.wifi;
+package com.rhythmcoderzzf.androidstudysystem.connection.wifi;
 
 import android.os.Bundle;
 
 import com.rhythmcoderzzf.androidstudysystem.R;
-import com.rhythmcoderzzf.androidstudysystem.wifi.p2p.WlanP2PActivity;
+import com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p.WlanP2PActivity;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.baselib.ListAdapter;
 import com.rhythmcoderzzf.baselib.TitleBean;

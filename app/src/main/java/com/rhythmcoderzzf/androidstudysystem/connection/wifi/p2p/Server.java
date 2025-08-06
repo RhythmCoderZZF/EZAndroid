@@ -1,9 +1,8 @@
-package com.rhythmcoderzzf.androidstudysystem.wifi.p2p;
+package com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p;
 
 import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;

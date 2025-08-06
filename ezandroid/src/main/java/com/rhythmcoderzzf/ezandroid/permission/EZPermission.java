@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
@@ -41,7 +42,7 @@ public class EZPermission {
      * 默认使用ActivityResultRequest API 请求权限
      */
     private boolean mNotUseActivityResultAPI = false;
-    private ActivityResultLauncher activityResultLauncher;
+    private ActivityResultLauncher<String[]> activityResultLauncher;
     private ListenActivityResultRequest mListenActivityResultRequest;
 
     private EZPermission(FragmentActivity context) {
@@ -61,18 +62,18 @@ public class EZPermission {
      *
      * @param listener 回调接口
      */
-    public void requestPermission(@NonNull OnPermissionListener listener) {
+    public void requestPermission(@Nullable OnPermissionListener listener) {
+        mListener = listener;
         int permissionGrantedCount = 0;
         for (String permission : mPermissions) {
             if (ContextCompat.checkSelfPermission(mContext, permission) == PackageManager.PERMISSION_GRANTED) {
                 permissionGrantedCount++;
             }
         }
-        if (mPermissions.length == permissionGrantedCount) {
-            listener.onPermissionGranted(true, null);
+        if (mPermissions.length == permissionGrantedCount && mListener != null) {
+            mListener.onPermissionGranted(true, null);
             return;
         }
-        mListener = listener;
         if (!mNotUseActivityResultAPI) {
             requestPermissionByActivityResultLauncher();
         } else
@@ -93,7 +94,7 @@ public class EZPermission {
             }
         });
         if (deniedPermissions.isEmpty()) {
-            mListener.onPermissionGranted(true, deniedPermissions);
+            if (mListener != null) mListener.onPermissionGranted(true, deniedPermissions);
         } else {
             /*final List<String> permanentlyDenied = new ArrayList<>();
             deniedPermissions.forEach(permission -> {
@@ -101,14 +102,11 @@ public class EZPermission {
                     permanentlyDenied.add(permission);
                 }
             });*/
-            mListener.onPermissionGranted(false, deniedPermissions);
+            if (mListener != null) mListener.onPermissionGranted(false, deniedPermissions);
         }
     }
 
     private void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (mListener == null) {
-            return;
-        }
         if (permissions.length > 0) {
             //拒绝权限列表
             final List<String> deniedPermissions = new ArrayList<>();
@@ -117,7 +115,8 @@ public class EZPermission {
                     deniedPermissions.add(permissions[i]);
                 }
             }
-            mListener.onPermissionGranted(deniedPermissions.isEmpty(), deniedPermissions);
+            if (mListener != null)
+                mListener.onPermissionGranted(deniedPermissions.isEmpty(), deniedPermissions);
         }
     }
 

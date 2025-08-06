@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.androidstudysystem.wifi.p2p.wifidirect;
+package com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p.wifidirect;
 
 import android.Manifest;
 import android.content.Context;

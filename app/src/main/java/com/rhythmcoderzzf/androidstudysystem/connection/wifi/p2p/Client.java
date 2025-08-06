@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.androidstudysystem.wifi.p2p;
+package com.rhythmcoderzzf.androidstudysystem.connection.wifi.p2p;
 
 import com.rhythmcoderzzf.baselib.cmd.CmdUtil;
 

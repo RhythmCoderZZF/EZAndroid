@@ -61,6 +61,22 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
+    <!--[Bluetooth]-->
+    <!-- 允许应用连接配对的蓝牙设备 level:normal -->
+    <uses-permission android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <!-- 允许应用发现和配对蓝牙设备 level:normal -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <!-- 使用蓝牙扫描结果来推导物理位置（是必需的，因为在 Android 11 及更低版本中，蓝牙扫描可能会被用来收集有关用户位置的信息） level: dangerous-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 查找其他蓝牙设备（运行时权限）level:dangerous -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <!-- 被其他蓝牙设备检测到（运行时权限）level:dangerous -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <!-- 与已配对蓝牙设备通信（运行时权限）level:dangerous -->
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <application
         android:name=".App"
         android:allowAudioPlaybackCapture="true"
@@ -147,9 +163,9 @@
         <activity android:name=".background.service.BackgroundServiceActivity" />
         <activity android:name=".background.service.fgservice.BackgroundForegroundServiceActivity" />
         <activity android:name=".background.service.bindservice.BackgroundBindServiceActivity" />
-        <activity android:name=".wifi.WifiMainActivity" />
-        <activity android:name=".wifi.WlanScanActivity" />
-        <activity android:name=".wifi.p2p.WlanP2PActivity" />
+        <activity android:name=".connection.wifi.WifiMainActivity" />
+        <activity android:name=".connection.wifi.WlanScanActivity" />
+        <activity android:name=".connection.wifi.p2p.WlanP2PActivity" />
         <!-- [Media] -->
         <activity android:name=".media.MediaMainActivity" />
         <activity android:name=".media.MediaProjectionRecordActivity" />
@@ -176,6 +192,8 @@
         <!--[JNI]-->
         <activity android:name=".jni.JNIMainActivity" />
         <activity android:name=".jni.JNISampleActivity" />
+        <activity android:name="com.rhythmcoderzzf.androidstudysystem.connection.bluetooth.BTMainActivity" />
+        <activity android:name="com.rhythmcoderzzf.androidstudysystem.connection.bluetooth.BTBaseActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

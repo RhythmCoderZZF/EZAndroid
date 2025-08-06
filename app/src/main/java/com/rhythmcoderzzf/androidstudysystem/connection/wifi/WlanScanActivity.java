@@ -1,4 +1,4 @@
-package com.rhythmcoderzzf.androidstudysystem.wifi;
+package com.rhythmcoderzzf.androidstudysystem.connection.wifi;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

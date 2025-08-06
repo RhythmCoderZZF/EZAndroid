@@ -7,13 +7,14 @@ import android.os.Bundle;
 
 import com.rhythmcoderzzf.androidstudysystem.background.BackgroundWorkMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.camera.CameraMainActivity;
+import com.rhythmcoderzzf.androidstudysystem.connection.bluetooth.BTMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.jni.JNIMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.media.MediaMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.other.OtherMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.sensor.SensorMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.ui.UIMainActivity;
 import com.rhythmcoderzzf.androidstudysystem.ui_views.UIViewsMainActivity;
-import com.rhythmcoderzzf.androidstudysystem.wifi.WifiMainActivity;
+import com.rhythmcoderzzf.androidstudysystem.connection.wifi.WifiMainActivity;
 import com.rhythmcoderzzf.baselib.BaseActivity;
 import com.rhythmcoderzzf.baselib.ListAdapter;
 import com.rhythmcoderzzf.baselib.TitleBean;
@@ -37,6 +38,7 @@ public class MainActivity extends BaseActivity {
         mList.add(new TitleBean(getString(R.string.storage), "", getString(R.string.storage_info), StorageMainActivity.class));
         mList.add(new TitleBean(getString(R.string.background), BackgroundWorkMainActivity.class));
         mList.add(new TitleBean("WIFI", WifiMainActivity.class));
+        mList.add(new TitleBean("Bluetooth", BTMainActivity.class));
         mList.add(new TitleBean("Sensor", SensorMainActivity.class));
         mList.add(new TitleBean("UI", UIMainActivity.class));
         mList.add(new TitleBean("UI-Views", UIViewsMainActivity.class));
