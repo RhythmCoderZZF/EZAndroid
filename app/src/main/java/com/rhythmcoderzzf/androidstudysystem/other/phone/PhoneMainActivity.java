@@ -19,8 +19,8 @@ public class PhoneMainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_phone);
         mPhoneUtil = new EZTelephone(this);
-        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS).build().requestPermission((granted, deniedPermissions) -> {
-            if (granted) {
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.READ_PHONE_STATE, Manifest.permission.READ_PHONE_NUMBERS).build().requestPermission((deniedPermissions) -> {
+            if (deniedPermissions.isEmpty()) {
                 start();
             }
         });

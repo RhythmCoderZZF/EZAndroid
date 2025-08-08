@@ -42,6 +42,8 @@ android {
             version = "3.22.1"
         }
     }
+    //将libs目录设置为存放 JNI 本地库文件（.so文件） 的根目录。libs目录需位于模块的 src/main/下（如 app/src/main/libs）
+    //子目录需按 CPU 架构命名（例如 armeabi-v7a、arm64-v8a）
 }
 
 dependencies {

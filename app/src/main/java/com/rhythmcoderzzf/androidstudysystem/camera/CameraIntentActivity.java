@@ -23,7 +23,7 @@ public class CameraIntentActivity extends BaseActivity implements View.OnClickLi
         setContentView(R.layout.activity_media_camera_intent);
         findViewById(R.id.btn_lunch_camera).setOnClickListener(this);
         findViewById(R.id.btn_lunch_video).setOnClickListener(this);
-        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.CAMERA).build().requestPermission((granted, deniedPermissions) -> {
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.CAMERA).build().requestPermission((deniedPermissions) -> {
 
         });
         cameraUtil = new EZCamera(this);

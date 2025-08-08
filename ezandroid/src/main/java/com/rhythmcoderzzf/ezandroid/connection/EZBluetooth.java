@@ -13,70 +13,129 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.DefaultLifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.rhythmcoderzzf.ezandroid.core.AbstractBuilder;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+/**
+ * EZ Bluetooth。
+ * <p>使用方式</p>
+ * <pre>
+ *  EZBluetooth ezBluetooth = new EZBluetooth.Builder(this)
+ *                 .setCallback(MyOnBluetoothCallback())
+ *                 .build();
+ *  ezBluetooth.startDiscover();
+ * </pre>
+ */
 @SuppressLint("MissingPermission")
-public class EZBluetooth {
+public class EZBluetooth implements DefaultLifecycleObserver {
     private static final String TAG = EZBluetooth.class.getSimpleName();
-    private final FragmentActivity mContext;
+    private final Context mContext;
     private BluetoothManager mBluetoothManager;
-    private BluetoothAdapter mBluetoothAdapter;
-    private OnBluetoothCallback onBluetoothCallback;
+    public BluetoothAdapter mBluetoothAdapter;
     private ActivityResultLauncher<Intent> mEnableBluetoothLauncher;
     private ActivityResultLauncher<Intent> mEnableDiscoverable;
-    private final List<BluetoothDevice> mFoundedDevices = new ArrayList<>();
+    private OnBluetoothCallback mCallback;
+    private boolean mListenActivityLifecycle = true;
     private String mServerName;
-    private UUID mUUID;
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
+    private AcceptThread acceptThread;
+    private ConnectThread connectThread;
+    private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            //当每发现一台蓝牙设备，都会广播该设备
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                //发现一台蓝牙设备
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                mFoundedDevices.add(device);
+                if (mCallback != null) mCallback.onFoundedDevice(device);
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                //开始发现蓝牙
+                if (mCallback != null) mCallback.onDiscoveryStarted();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //结束发现蓝牙
+                if (mCallback != null) mCallback.onDiscoveryFinished();
+            } else if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
+                //蓝牙开关状态改变
+                if (mCallback != null) mCallback.onStateChanged(intent);
+            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                if (mCallback != null) mCallback.onBondStateChanged(intent);
+            }else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Toast.makeText(context, device.getName()+":connect", Toast.LENGTH_SHORT).show();
+            }else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                Toast.makeText(context, device.getName()+":disConnect", Toast.LENGTH_SHORT).show();
             }
         }
     };
 
-    public EZBluetooth(FragmentActivity tmpContext) {
+    private EZBluetooth(Context tmpContext) {
         this.mContext = tmpContext;
         mBluetoothManager = mContext.getSystemService(BluetoothManager.class);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
-        if (mBluetoothAdapter == null) {
-            return;
-        }
-        //必须在activity started之前注册
-        mEnableBluetoothLauncher = mContext.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            onBluetoothCallback.onUserGrantedOpen(result.getResultCode() == RESULT_OK);
-        });
-
-        mEnableDiscoverable = mContext.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-            onBluetoothCallback.onUserGrantedDiscover(result.getResultCode() == RESULT_OK);
-        });
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        mContext.registerReceiver(mReceiver, filter);
     }
 
     private EZBluetooth onInit() {
-        if (onBluetoothCallback == null) {
+        if (mBluetoothAdapter == null) {
             throw new IllegalStateException();
         }
+        //注意必须在Activity onStart之前注册
+        if (mContext instanceof ComponentActivity) {
+            ComponentActivity activity = (ComponentActivity) mContext;
+            mEnableBluetoothLauncher = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (mCallback != null)
+                    mCallback.onUserGrantedOpen(result.getResultCode() == RESULT_OK);
+            });
+
+            mEnableDiscoverable = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (mCallback != null)
+                    mCallback.onUserGrantedDiscover(result.getResultCode() == RESULT_OK);
+            });
+        }
+
+
+        if (mContext instanceof LifecycleOwner && mListenActivityLifecycle) {
+            LifecycleOwner lifecycleOwner = (LifecycleOwner) mContext;
+            lifecycleOwner.getLifecycle().addObserver(this);
+        }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        mContext.registerReceiver(mReceiver, filter);
         return this;
     }
 
+    /**
+     * 结束发现附近蓝牙
+     */
+    private void cancelDiscovery() {
+        if (mBluetoothAdapter.isEnabled() && mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
+    }
+
+    @Override
+    final public void onDestroy(@NonNull LifecycleOwner owner) {
+        DefaultLifecycleObserver.super.onDestroy(owner);
+        release();
+    }
 
     /**
      * 开启蓝牙开关。系统会显示一个对话框，请求用户授予
@@ -89,15 +148,44 @@ public class EZBluetooth {
     }
 
     /**
+     * 释放所有资源。该方法一般再LifecycleOwner中的onDestroy中自动释放，如果context不支持lifecycle，则需要手动释放
+     */
+    public void release() {
+        if (mContext instanceof LifecycleOwner) {
+            LifecycleOwner lifecycleOwner = (LifecycleOwner) mContext;
+            lifecycleOwner.getLifecycle().removeObserver(this);
+        }
+        cancelDiscovery();
+        if (mReceiver != null) {
+            mContext.unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
+        if (acceptThread != null) {
+            acceptThread.closeServer();
+            acceptThread = null;
+        }
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
+        }
+    }
+
+    /**
+     * 蓝牙开关是否开启
+     *
+     * @return 开启状态
+     */
+    public boolean isEnabled() {
+        return mBluetoothAdapter.isEnabled();
+    }
+
+    /**
      * 查询已配对设备
      *
      * @return 已配对的设备
      */
-    public Set<BluetoothDevice> getPairedDevices() {
-        if (!mBluetoothAdapter.isEnabled()) {
-            return mBluetoothAdapter.getBondedDevices();
-        }
-        return null;
+    public Set<BluetoothDevice> getBondedDevices() {
+        return mBluetoothAdapter.getBondedDevices();
     }
 
     /**
@@ -113,10 +201,20 @@ public class EZBluetooth {
      * @param seconds 被发现的秒数
      */
     public void setDiscoverable(int seconds) {
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, seconds);
-            mEnableDiscoverable.launch(intent);
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, seconds);
+        mEnableDiscoverable.launch(intent);
+    }
+
+    /**
+     * 开始发现附近蓝牙
+     */
+    public void startDiscover() {
+        if (mBluetoothAdapter.isEnabled()) {
+            if (mBluetoothAdapter.isDiscovering()) {
+                mBluetoothAdapter.cancelDiscovery();
+            }
+            mBluetoothAdapter.startDiscovery();
         }
     }
 
@@ -128,7 +226,11 @@ public class EZBluetooth {
      * @return AcceptThread
      */
     public AcceptThread startServerSocketListenThread(ServerSocketCallback callback, boolean closeImmediately) {
-        AcceptThread acceptThread = new AcceptThread(callback, closeImmediately);
+        if (acceptThread != null) {
+            acceptThread.closeServer();
+            acceptThread = null;
+        }
+        acceptThread = new AcceptThread(callback, closeImmediately);
         acceptThread.start();
         return acceptThread;
     }
@@ -141,14 +243,18 @@ public class EZBluetooth {
      * @return
      */
     public ConnectThread startClientSocketConnectThread(BluetoothDevice device, ClientSocketCallback callback) {
-        ConnectThread connectThread = new ConnectThread(device, callback);
+        if (connectThread != null) {
+            connectThread.cancel();
+            connectThread = null;
+        }
+        connectThread = new ConnectThread(device, callback);
         connectThread.start();
         return connectThread;
     }
 
 
     private class AcceptThread extends Thread {
-        private final BluetoothServerSocket mmServerSocket;
+        private final BluetoothServerSocket mServerSocket;
         private final ServerSocketCallback serverSocketCallback;
         private final boolean closeImmediately;
 
@@ -163,14 +269,15 @@ public class EZBluetooth {
             } catch (IOException e) {
                 Log.e(TAG, "Socket's listen() method failed", e);
             }
-            mmServerSocket = tmp;
+            mServerSocket = tmp;
         }
 
         public void run() {
             BluetoothSocket socket = null;
             while (true) {
                 try {
-                    socket = mmServerSocket.accept();
+                    //监听客户端接入，当调用close()方法会出发IO异常，从而跳出while循环
+                    socket = mServerSocket.accept();
                 } catch (IOException e) {
                     Log.e(TAG, "Socket's accept() method failed", e);
                     break;
@@ -185,46 +292,42 @@ public class EZBluetooth {
 
         public void closeServer() {
             try {
-                if (mmServerSocket != null) mmServerSocket.close();
+                if (mServerSocket != null) mServerSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "Could not close the connect socket", e);
             }
         }
     }
 
-    private class ConnectThread extends Thread {
-        private final BluetoothSocket mmSocket;
-        private final BluetoothDevice mmDevice;
+    class ConnectThread extends Thread {
+        private BluetoothSocket mSocket;
         private final ClientSocketCallback clientSocketCallback;
 
         public ConnectThread(BluetoothDevice device, ClientSocketCallback callback) {
-            BluetoothSocket tmp = null;
-            mmDevice = device;
             clientSocketCallback = callback;
-
             try {
                 //Create an RFCOMM BluetoothSocket ready to start a secure outgoing connection to this remote device using SDP lookup of uuid.
-                tmp = mmDevice.createRfcommSocketToServiceRecord(mUUID);
+                mSocket = device.createRfcommSocketToServiceRecord(mUUID);
             } catch (IOException e) {
                 Log.e(TAG, "Socket's create() method failed", e);
             }
-            mmSocket = tmp;
         }
 
         public void run() {
-            mBluetoothAdapter.cancelDiscovery();
             try {
-                mmSocket.connect();
-            } catch (IOException connectException) {
+                mBluetoothAdapter.cancelDiscovery();
+                mSocket.connect();
+            } catch (Exception e) {
+                Log.e(TAG, "Socket's connect() method failed", e);
                 cancel();
                 return;
             }
-            clientSocketCallback.acceptServerSocket(mmSocket);
+            clientSocketCallback.acceptServerSocket(mSocket);
         }
 
         public void cancel() {
             try {
-                mmSocket.close();
+                mSocket.close();
             } catch (IOException e) {
                 Log.e(TAG, "Could not close the client socket", e);
             }
@@ -233,12 +336,12 @@ public class EZBluetooth {
 
 
     public static class Builder implements AbstractBuilder<EZBluetooth> {
-        private final FragmentActivity context;
-        private OnBluetoothCallback onBluetoothCallback;
+        private final Context context;
+        private OnBluetoothCallback mCallback;
         private String name;
         private UUID uuid;
 
-        public Builder(FragmentActivity context) {
+        public Builder(Context context) {
             this.context = context;
         }
 
@@ -247,8 +350,8 @@ public class EZBluetooth {
          *
          * @param callback 回调接口
          */
-        public Builder setOnBluetoothCallback(OnBluetoothCallback callback) {
-            onBluetoothCallback = callback;
+        public Builder setCallback(OnBluetoothCallback callback) {
+            mCallback = callback;
             return this;
         }
 
@@ -278,9 +381,11 @@ public class EZBluetooth {
 
         public EZBluetooth build() {
             EZBluetooth ezBluetooth = new EZBluetooth(context);
-            ezBluetooth.onBluetoothCallback = onBluetoothCallback;
+            ezBluetooth.mCallback = mCallback;
             ezBluetooth.mServerName = name;
-            ezBluetooth.mUUID = uuid;
+            if (uuid != null) {
+                ezBluetooth.mUUID = uuid;
+            }
             return ezBluetooth.onInit();
         }
     }
@@ -304,12 +409,48 @@ public class EZBluetooth {
          */
         public void onUserGrantedDiscover(boolean granted) {
         }
+
+        /**
+         * 每发现一个蓝牙设备，都会回调该方法。注意该蓝牙设备可能被重复发现，需要做过滤操作
+         *
+         * @param bluetoothDevice 蓝牙设备
+         */
+        public void onFoundedDevice(BluetoothDevice bluetoothDevice) {
+        }
+
+        /**
+         * 开始发现附近蓝牙。等于{@link BluetoothAdapter#ACTION_DISCOVERY_STARTED}
+         */
+        public void onDiscoveryStarted() {
+        }
+
+        /**
+         * 停止发现附近蓝牙。等于{@link BluetoothAdapter#ACTION_DISCOVERY_FINISHED}
+         */
+        public void onDiscoveryFinished() {
+        }
+
+        /**
+         * 蓝牙开关状态改变。等于{@link BluetoothAdapter#ACTION_STATE_CHANGED}
+         *
+         * @param intent 广播携带的intent
+         */
+        public void onStateChanged(Intent intent) {
+        }
+
+        /**
+         * 蓝牙绑定状态改变。{@link BluetoothDevice#createBond}调用后会出发广播{@link BluetoothDevice#ACTION_BOND_STATE_CHANGED}
+         *
+         * @param intent 广播携带的intent
+         */
+        public void onBondStateChanged(Intent intent) {
+        }
     }
 
     /**
      * 设备作为服务端，蓝牙通信Socket回调
      */
-    interface ServerSocketCallback {
+    public interface ServerSocketCallback {
         /**
          * 服务端接收到客户端成功接入的回调
          *
@@ -321,7 +462,7 @@ public class EZBluetooth {
     /**
      * 设备作为客户端，蓝牙通信Socket回调
      */
-    interface ClientSocketCallback {
+    public interface ClientSocketCallback {
         /**
          * 客户端成功连接上服务端的回调
          *

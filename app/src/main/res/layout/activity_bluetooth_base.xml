@@ -9,13 +9,42 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btn_open_bt"
-            style="@style/BaseButton"
+        <TextView
+            android:id="@+id/tv_bt_opened"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="打开蓝牙" />
+            style="@style/BaseTextView.Small"
+            android:text="蓝牙开启:"/>
 
 
+        <TextView
+            style="@style/BaseCategoryTextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="搜索蓝牙设备" />
+
+        <TextView
+            style="@style/BaseTextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="未绑定蓝牙的设备:" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_un_bounded_devices"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginEnd="100dp" />
+
+        <TextView
+            style="@style/BaseTextView.Normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="已绑定蓝牙的设备:" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_bounded_devices"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginEnd="100dp" />
     </LinearLayout>
 </ScrollView>

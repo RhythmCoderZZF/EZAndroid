@@ -23,8 +23,8 @@ public class Camera2APIActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_camera_camera2_api);
         cameraPreview = findViewById(R.id.camera_preview);
-        new EZPermission.Builder(this).applyUseActivityResultApi(false).applyRequestPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).build().requestPermission((granted, deniedPermissions) -> {
-            if (!granted) {
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO).build().requestPermission((deniedPermissions) -> {
+            if (deniedPermissions.isEmpty()) {
                 toast("请打开权限");
                 finish();
             } else {

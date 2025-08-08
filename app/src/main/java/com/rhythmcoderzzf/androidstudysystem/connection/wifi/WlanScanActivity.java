@@ -51,8 +51,8 @@ public class WlanScanActivity extends BaseActivity<ActivityWifiWlanScanBinding> 
     public void onClick(View v) {
         if (v.getId() == R.id.btn_scan) {
             new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION
-                    , Manifest.permission.CHANGE_WIFI_STATE).build().requestPermission((granted, deniedPermissions) -> {
-                if (granted && !mEZWifi.startScan()) {
+                    , Manifest.permission.CHANGE_WIFI_STATE).build().requestPermission((deniedPermissions) -> {
+                if (deniedPermissions.isEmpty() && !mEZWifi.startScan()) {
                     toast("请打开Wifi");
                 }
             });

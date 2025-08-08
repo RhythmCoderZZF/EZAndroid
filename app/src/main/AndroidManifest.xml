@@ -192,8 +192,8 @@
         <!--[JNI]-->
         <activity android:name=".jni.JNIMainActivity" />
         <activity android:name=".jni.JNISampleActivity" />
-        <activity android:name="com.rhythmcoderzzf.androidstudysystem.connection.bluetooth.BTMainActivity" />
-        <activity android:name="com.rhythmcoderzzf.androidstudysystem.connection.bluetooth.BTBaseActivity" />
+        <activity android:name=".connection.bluetooth.BTMainActivity" />
+        <activity android:name=".connection.bluetooth.BTBaseActivity" />
 
         <service
             android:name=".background.service.BackgroundService"

@@ -66,7 +66,7 @@ public class MediaProjectionRecordAudioActivity extends BaseActivity<ActivityMed
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.RECORD_AUDIO).build().requestPermission((granted, deniedPermissions) -> {
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.RECORD_AUDIO).build().requestPermission((deniedPermissions) -> {
 
         });
         mediaProjectionManager = (MediaProjectionManager) getSystemService(MEDIA_PROJECTION_SERVICE);
