@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.activity.ComponentActivity;
 import androidx.activity.result.ActivityResultLauncher;
@@ -33,9 +32,12 @@ import java.util.UUID;
  * <p>使用方式</p>
  * <pre>
  *  EZBluetooth ezBluetooth = new EZBluetooth.Builder(this)
- *                 .setCallback(MyOnBluetoothCallback())
+ *                 .setCallback(BluetoothCallback())
  *                 .build();
+ *  //搜索
  *  ezBluetooth.startDiscover();
+ *  //向远程设备发起连接。需要bond成功
+ *  ezBluetooth.startConnectToServerThread()
  * </pre>
  */
 @SuppressLint("MissingPermission")
@@ -50,7 +52,6 @@ public class EZBluetooth implements DefaultLifecycleObserver {
     private boolean mListenActivityLifecycle = true;
     private String mServerName;
     private UUID mUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
     private AcceptThread acceptThread;
     private ConnectThread connectThread;
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -70,13 +71,14 @@ public class EZBluetooth implements DefaultLifecycleObserver {
                 //蓝牙开关状态改变
                 if (mCallback != null) mCallback.onStateChanged(intent);
             } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                //蓝牙配对状态改变
                 if (mCallback != null) mCallback.onBondStateChanged(intent);
-            }else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Toast.makeText(context, device.getName()+":connect", Toast.LENGTH_SHORT).show();
-            }else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                Toast.makeText(context, device.getName()+":disConnect", Toast.LENGTH_SHORT).show();
+            } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
+                //ACL连接
+                if (mCallback != null) mCallback.onACLConnected(intent, true);
+            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
+                //ACL断开
+                if (mCallback != null) mCallback.onACLConnected(intent, false);
             }
         }
     };
@@ -85,12 +87,12 @@ public class EZBluetooth implements DefaultLifecycleObserver {
         this.mContext = tmpContext;
         mBluetoothManager = mContext.getSystemService(BluetoothManager.class);
         mBluetoothAdapter = mBluetoothManager.getAdapter();
-    }
-
-    private EZBluetooth onInit() {
         if (mBluetoothAdapter == null) {
             throw new IllegalStateException();
         }
+    }
+
+    private EZBluetooth onInit() {
         //注意必须在Activity onStart之前注册
         if (mContext instanceof ComponentActivity) {
             ComponentActivity activity = (ComponentActivity) mContext;
@@ -104,7 +106,6 @@ public class EZBluetooth implements DefaultLifecycleObserver {
                     mCallback.onUserGrantedDiscover(result.getResultCode() == RESULT_OK);
             });
         }
-
 
         if (mContext instanceof LifecycleOwner && mListenActivityLifecycle) {
             LifecycleOwner lifecycleOwner = (LifecycleOwner) mContext;
@@ -122,19 +123,17 @@ public class EZBluetooth implements DefaultLifecycleObserver {
         return this;
     }
 
-    /**
-     * 结束发现附近蓝牙
-     */
-    private void cancelDiscovery() {
-        if (mBluetoothAdapter.isEnabled() && mBluetoothAdapter.isDiscovering()) {
-            mBluetoothAdapter.cancelDiscovery();
-        }
-    }
-
     @Override
     final public void onDestroy(@NonNull LifecycleOwner owner) {
         DefaultLifecycleObserver.super.onDestroy(owner);
         release();
+    }
+
+    //结束发现附近蓝牙
+    private void cancelDiscovery() {
+        if (mBluetoothAdapter.isEnabled() && mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
     }
 
     /**
@@ -225,7 +224,7 @@ public class EZBluetooth implements DefaultLifecycleObserver {
      * @param closeImmediately 服务端处理完Client接收任务后，是否立即关闭
      * @return AcceptThread
      */
-    public AcceptThread startServerSocketListenThread(ServerSocketCallback callback, boolean closeImmediately) {
+    public AcceptThread startListenClientThread(ServerSocketCallback callback, boolean closeImmediately) {
         if (acceptThread != null) {
             acceptThread.closeServer();
             acceptThread = null;
@@ -242,7 +241,7 @@ public class EZBluetooth implements DefaultLifecycleObserver {
      * @param callback 连接成功后回调
      * @return
      */
-    public ConnectThread startClientSocketConnectThread(BluetoothDevice device, ClientSocketCallback callback) {
+    public ConnectThread startConnectToServerThread(BluetoothDevice device, ClientSocketCallback callback) {
         if (connectThread != null) {
             connectThread.cancel();
             connectThread = null;
@@ -252,7 +251,7 @@ public class EZBluetooth implements DefaultLifecycleObserver {
         return connectThread;
     }
 
-
+    //设备作为Server端，接收Client端请求和数据
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mServerSocket;
         private final ServerSocketCallback serverSocketCallback;
@@ -299,7 +298,8 @@ public class EZBluetooth implements DefaultLifecycleObserver {
         }
     }
 
-    class ConnectThread extends Thread {
+    //设备作为Client端，向Server端请求和发送数据
+    private class ConnectThread extends Thread {
         private BluetoothSocket mSocket;
         private final ClientSocketCallback clientSocketCallback;
 
@@ -444,6 +444,16 @@ public class EZBluetooth implements DefaultLifecycleObserver {
          * @param intent 广播携带的intent
          */
         public void onBondStateChanged(Intent intent) {
+        }
+
+
+        /**
+         * 成功建立ACL（Asynchronous Connection-Less）连接。参见{@link BluetoothDevice#ACTION_ACL_CONNECTED};{@link BluetoothDevice#ACTION_ACL_DISCONNECTED}
+         *
+         * @param intent    intent
+         * @param connected 是否连接
+         */
+        public void onACLConnected(Intent intent, boolean connected) {
         }
     }
 

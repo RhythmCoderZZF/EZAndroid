@@ -21,9 +21,9 @@ import java.util.Map;
  *     new EZPermission.Builder(this)
  *              .applyRequestPermission(Manifest.permission.CAMERA,...)
  *              .build()
- *              .requestPermission((granted, deniedPermissions) -> {
- *                  if (granted) {
- *                      //...
+ *              .requestPermission((deniedPermissions) -> {
+ *                  if (deniedPermissions.isEmpty()) {
+ *                      //所有权限被授权
  *                   }
  *              });
  * </pre>
@@ -59,6 +59,7 @@ public class EZPermission {
             }
         }
         if (mPermissions.length == permissionGrantedCount && mListener != null) {
+            //权限已经都被授权过
             mListener.onPermissionGranted(new ArrayList<>());
             return;
         }
@@ -66,7 +67,7 @@ public class EZPermission {
     }
 
     private void onRequestPermissionByUserActivityResultLauncherResult(Map<String, Boolean> allPermissionsMap) {
-        //拒绝权限列表
+        //用户拒绝的权限列表
         final List<String> deniedPermissions = new ArrayList<>();
         //永久拒绝权限列表（拒绝且不在提示）
         allPermissionsMap.forEach((permission, granted) -> {

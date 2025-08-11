@@ -4,14 +4,11 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,21 +20,22 @@ import com.rhythmcoderzzf.ezandroid.permission.EZPermission;
 import com.rhythmcoderzzf.ezandroid.utils.EZLogUtil;
 import com.rhythmcoderzzf.ezandroid.view.EZRecyclerView;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressLint("MissingPermission")
+@SuppressLint({"SetTextI18n", "MissingPermission"})
 public class BTBaseActivity extends BaseActivity<ActivityBluetoothBaseBinding> {
     private EZBluetooth ezBluetooth;
     private EZRecyclerView mUnBondRecyclerView;
     private EZRecyclerView mBondRecyclerView;
+    //未配对蓝牙设备列表
     private List<BluetoothDevice> mUnBondedDevices = new ArrayList<>();
+    //已配对蓝牙设备列表
     private List<BluetoothDevice> mBondedDevices = new ArrayList<>();
 
     //当前配对上蓝牙设备的mac地址
-    private BluetoothDevice selectBondDevice;
+    private BluetoothDevice mSelectBondDevice;
 
     @Override
     protected ActivityBluetoothBaseBinding inflateViewBinding(@NonNull LayoutInflater layoutInflater) {
@@ -47,29 +45,30 @@ public class BTBaseActivity extends BaseActivity<ActivityBluetoothBaseBinding> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).build().requestPermission(this::init);
+        new EZPermission.Builder(this).applyRequestPermission(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.BLUETOOTH_CONNECT, Manifest.permission.BLUETOOTH_SCAN).build().requestPermission(this::permissionResult);
+        try {
+            mUnBondRecyclerView = new EZRecyclerView.Builder<String>(this).setCallBack(new UnBoundedViewCallBack()).setRecyclerView(mBinding.rvUnBoundedDevices).build();
+            mBondRecyclerView = new EZRecyclerView.Builder<String>(this).setCallBack(new BoundedViewCallBack()).setRecyclerView(mBinding.rvBoundedDevices).build();
+        } catch (Exception e) {
+            EZLogUtil.e(TAG, "init RecyclerView err", e);
+        }
     }
 
-    private void init(List<String> deniedPermissions) {
+    private void permissionResult(List<String> deniedPermissions) {
         if (!deniedPermissions.isEmpty()) {
             toast("请授予权限");
             return;
         }
         ezBluetooth = new EZBluetooth.Builder(this).setCallback(new BTBaseActivity.MyOnBluetoothCallback()).build();
+        mBinding.tvBtOpened.setText("蓝牙开启:" + ezBluetooth.isEnabled());
         if (!ezBluetooth.isEnabled()) {
             ezBluetooth.open();
         } else {
             startDiscover();
         }
-        mBinding.tvBtOpened.setText("蓝牙开启:" + ezBluetooth.isEnabled());
-        try {
-            mUnBondRecyclerView = new EZRecyclerView.Builder<String>(this).setCallBack(new UnBoundedViewCallBack()).setRecyclerView(mBinding.rvUnBoundedDevices).build();
-            mBondRecyclerView = new EZRecyclerView.Builder<String>(this).setCallBack(new BoundedViewCallBack()).setRecyclerView(mBinding.rvBoundedDevices).build();
-        } catch (Exception e) {
-            Log.e(TAG, "init: ", e);
-        }
     }
 
+    //搜索附近蓝牙设备
     private void startDiscover() {
         ezBluetooth.startDiscover();
     }
@@ -178,20 +177,25 @@ public class BTBaseActivity extends BaseActivity<ActivityBluetoothBaseBinding> {
         @Override
         protected void onItemClick(View itemView, int position) {
             super.onItemClick(itemView, position);
-            selectBondDevice = mBondedDevices.get(position);
+            mSelectBondDevice = mBondedDevices.get(position);
             send("hello");
         }
     }
 
 
+    /**
+     * 向蓝牙设备发送数据。
+     * @param sendData
+     */
     public void send(String sendData) {
-        if (selectBondDevice == null) {
+        if (mSelectBondDevice == null) {
             return;
         }
-        ezBluetooth.startClientSocketConnectThread(selectBondDevice, server -> {
-            try (OutputStream outputStream = server.getOutputStream()) {
+        ezBluetooth.startConnectToServerThread(mSelectBondDevice, server -> {
+            try {
+                OutputStream outputStream = server.getOutputStream();
                 byte[] data = sendData.getBytes("gbk");
-                server.getOutputStream().write(data, 0, data.length);
+                outputStream.write(data, 0, data.length);
                 outputStream.flush();
             } catch (Exception e) {
                 EZLogUtil.e(TAG, "", e);

@@ -13,7 +13,7 @@ import java.util.List;
 public class BTMainActivity extends BaseActivity {
     private List<TitleBean> initRvDataList() {
         List<TitleBean> list = new ArrayList<>();
-        list.add(new TitleBean("基础", "BT基础使用", "", BTBaseActivity.class));
+        list.add(new TitleBean("案例", "搜索蓝牙设备并发送数据", "", BTBaseActivity.class));
         return list;
     }
 
